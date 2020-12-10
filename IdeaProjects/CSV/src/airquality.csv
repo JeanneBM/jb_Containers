@@ -1,0 +1,7 @@
+Country,State,city,place,lastupdate,Avg,Max,Min,Pollutants
+India,Andhra_Pradesh,Amaravati,Secretariat  Amaravati - APPCB,21-12-2018 03:00:00,70,108,42,PM2.5
+India,Bihar,Gaya,Collectorate  Gaya - BSPCB,21-12-2018 03:00:00,342,456,226,PM2.5
+India,Andhra_Pradesh,Rajamahendravaram,Anand Kala Kshetram  Rajamahendravaram - APPCB,21-12-2018 03:00:00,NA,NA,NA,PM2.5
+India,Andhra_Pradesh,Tirupati,Tirumala  Tirupati - APPCB,21-12-2018 03:00:00,46,72,28,PM2.5
+India,Bihar,Muzaffarpur,Muzaffarpur Collectorate  Muzaffarpur - BSPCB,21-12-2018 03:00:00,436,500,270,PM2.5
+India,Andhra_Pradesh,Vijayawada,PWD Grounds  Vijayawada - APPCB,21-12-2018 03:00:00,46,73,32,PM2.5
