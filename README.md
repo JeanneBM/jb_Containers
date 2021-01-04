@@ -21,6 +21,9 @@ Przestrzenie nazw i grupy kontrolne systemu Linux to funkcje wbudowane w jądro 
 
 
 
+
+
+
 Hypervisor
 
 Opis działania
