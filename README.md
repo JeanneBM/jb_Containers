@@ -20,7 +20,8 @@ Linux namespaces and control groups are features that are built into the Linux k
 
 Kontenery to po prostu proces (lub grupa procesów) działający w izolacji, co można osiągnąć dzięki przestrzeniom nazw i grupom kontrolnym systemu Linux.
 Przestrzenie nazw i grupy kontrolne systemu Linux to funkcje wbudowane w jądro systemu Linux. Poza samym jądrem Linuksa nie ma nic specjalnego w kontenerach.
-#################################################################################################################################################################
+
+############################################################################################################################
 
 II. Hypervisor
 
