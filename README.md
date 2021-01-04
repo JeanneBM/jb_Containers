@@ -1,4 +1,25 @@
-https://docs.openstack.org/nova/latest/user/support-matrix.html
+Docker wykorzystuje do tworzenia kontenerów dwie cechy/funkcjonalności z jądra Linuksa. 
+
+Pierwszą z nich jest cgroups, 
+czyli wspomniany wcześniej mechanizm odpowiadający przede wszystkim za limitowanie zasobów takich jak pamięć, zużycie procesora, 
+ilość operacji dyskowych czy maksymalna liczba procesów w zadanej grupie. Co więcej, mechanizm ten pozwala na zliczanie wszelkiego typu operacji.
+
+Drugim mechanizmem są namespace’y, 
+czyli przestrzenie nazw. W dużym skrócie, przestrzenie nazw odseparowują, tj. izolują procesy między różnymi przestrzeniami nazw. 
+Procesom w zadanej przestrzeni nazw „wydaje się”, że są one jedynymi procesami w systemie. Przestrzenie nazw posiadają między innymi 
+swoje wirtualne sieci, co jest niezbędne w przypadku kontenerów.
+
+Manual:
+man 7 namespaces i 
+man 7 cgroups 
+
+Containers are just a process (or a group of processes) running in isolation, which is achieved with Linux namespaces and control groups. 
+Linux namespaces and control groups are features that are built into the Linux kernel. Other than the Linux kernel itself, there is nothing special about containers.
+
+Kontenery to po prostu proces (lub grupa procesów) działający w izolacji, co można osiągnąć dzięki przestrzeniom nazw i grupom kontrolnym systemu Linux.
+Przestrzenie nazw i grupy kontrolne systemu Linux to funkcje wbudowane w jądro systemu Linux. Poza samym jądrem Linuksa nie ma nic specjalnego w kontenerach.
+
+
 
 Hypervisor
 
@@ -24,3 +45,6 @@ VMware Workstation
 VirtualBox
 
 Emulator – program komputerowy (czasem wraz z koniecznym sprzętem), który uruchomiony w danym systemie komputerowym duplikuje funkcje innego systemu komputerowego. Pierwszy system nazywany jest gospodarzem (ang. host), a drugi gościem (ang. guest). Mówimy, że drugi system jest emulowany przez pierwszy.
+
+
+https://docs.openstack.org/nova/latest/user/support-matrix.html
