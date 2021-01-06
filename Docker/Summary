@@ -8,6 +8,8 @@ Install Docker
 Play-With-Docker | http://play-with-docker.com 
 
 https://docs.docker.com/engine/install/ubuntu/
+https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository
+
 
 
 Docker to oprogramowanie open-source pozwalajace na automatyzacje procesu wdrozenia aplikacji. Koncepcja podobna do maszyn wirtualnych, ale duzo lzjesza. 
@@ -76,4 +78,27 @@ CMD ["/bin/echo", "hello world"]
 docker build –t <nazwa_obrazu> .
 docker images
 docker run <nazwa_obrazu>
+
+
+# -----------------------------------------------------------------------------
+
+Definicja runtime kontenera:
+https://www.docker.com/products/container-runtime
+
+Definicja kontenera:
+https://www.docker.com/resources/what-container
+
+Komendy Dockera:
+https://docs.docker.com/engine/reference/commandline/docker/
+
+Zarządzanie zasobami dyskowymi/mounty dockera:
+https://docs.docker.com/storage/
+
+# -----------------------------------------------------------------------------
+
+Tutoriale:
+https://www.youtube.com/watch?v=P4ZC3cFN0WQ || Docker dla webdevelopera - #01 - Czym jest Docker?
+
+IBM Kontenery:
+https://developer.ibm.com/technologies/containers/
 
