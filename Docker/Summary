@@ -1,0 +1,67 @@
+Docker to oprogramowanie open-source pozwalajace na automatyzacje procesu wdrozenia aplikacji. Koncepcja podobna do maszyn wirtualnych, ale duzo lzjesza. 
+Kontener Docker’a to opakowanie pozwalajace na uruchamianie pojedynczych procesow. Uruchamiane  sa  w  jadrze systemu operacyjnego hosta co objawia sie 
+minimalizacja dodatkowych narzutow na czas wykonania, ale tez zmniejszeniem bezpieczenstwa uruchamianego kodu. Dzieki wykorzystaniu minimalnej przestrzeni dyskowej 
+ich czas uruchamiania jest ekstremalnie szybki co powoduje, ze moga sluzyc do wykonywania krotkich zadan bedac wielokrotnie tworzone i usuwane (idea  mikro-serwisów).
+Komunikuja sie ze soba i z otoczeniem podobnie jak komputery w sieci lokalnej. Kazdy z nich posiada unikalny adres IP przypisany do wirtualnego interfejsu. 
+Kontenery najlepiej sprawdzaja sie w przypadku aplikacji bezstanowych, pozwalajac na latwe skalowanie horyzontalne. W przeciwnym razie stan aplikacji powinien 
+byc przechowywany na zewnatrz kontenera np. w bazie danych albo w systemie plikow – co jest niezalecane poniewaz wprowadza dodatkowe zaleznosci. 
+Bezstanowosc kontenerow bierze sie z faktu, ze podczas kazdego uruchamiania jest on odtwarzany z obrazu.
+
+
+obraz (ang. image) – z niego tworzony kontener, jak klasa tworzonych instancji kontenerow
+
+warstwa obrazu (ang. image layer) – warstwy powstaja w wyniku wykonywania czynnosci takich jak: instalacja pakietu, kopiowanie danych, 
+                                    ustawienie zmiennej srodowiskowej; sa dostepne jedynie do odczytu i to z nich skladaja sie obrazy
+                        
+kontener (ang. container) – jest to uruchomiona instancja obrazu Dokera; Zawiera aplikacje wraz z wszystkimi jej zaleznosciami, pozwalając na uruchomienie 
+                            jej jako izolowany proces w przestrzeni uzytkownika w systemie operacyjnym  hosta; moze  znajdowac  sie  w  jednym  z  nastepujacych  
+                            stanow: created, restarting, running, removing, paused, exitedidead
+                      
+demon/serwerdockera (ang. docker  daemon/server) – usluga dzialająca w tle na hoscie; zarzadza budowa, dzialaniem i dystrybucja kontenerow Dockera
+
+klient  dockera (ang. docker  client) – narzedzie typu wiersz  poleceń (ang. command-line  tool); pozwala uzytkownikowi na interakcje z demonem/serweremDockera
+
+Docker Hub – publiczny rejestr obrazow Dockera, zawiera duza liczbe gotowych do uzycia obrazow
+
+ping 8.8.8.8    //sparwdzenie polaczenia
+sudo apt-get update
+sudo apt-get install -y docker.io
+
+service docker status|start|stop    //sprawdzenie statusu/uruchomienie/zatrzymanieDockera
+systemctl status|start|stopdocker.service
+
+Docker Machine:
+base=https://github.com/docker/machine/releases/download/v0.14.0 && curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine && sudo install /tmp/docker-machine /usr/local/bin/docker-machine
+
+KONTENERY:
+docker help
+docker pull<nazwa_obrazu[:tag]>
+docker images
+docker rmi <nazwa_obrazu[:tag]|IMAGE ID>[-f]
+docker create --name<nazwa_kontenera> <nazwa_obrazu[:tag]|IMAGE ID>
+docker start <nazwa_kontenera>
+docker run<nazwa_obrazu[:tag]>
+
+docker runalpine
+docker pull alpine
+docker create –name alpine_container alpine
+docker start alpine_container
+
+docker ps -a
+docker stop <NAME|CONTAINER ID>
+docker rm <NAME|CONTAINER ID>
+docker info
+
+docker run--name my_nginx-d -p 80:80 nginx
+
+docker run -d --name topdemo ubuntu /usr/bin/top -b
+docker run ubuntu bash-c  "echo 'Docker is okey' > /tmp/docker-ok.txt"
+
+Dockerfile:
+FROM ubuntu
+CMD ["/bin/echo", "hello world"]
+
+docker build –t <nazwa_obrazu> .
+docker images
+docker run <nazwa_obrazu>
+
