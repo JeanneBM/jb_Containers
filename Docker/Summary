@@ -1,3 +1,15 @@
+Install Docker
+
+1. Sign up for Docker Hub: https://hub.docker.com/signup
+2. Navigate to https://hub.docker.com/?overlay=onboarding
+3. Download *Docker Desktop for Mac* or *Docker Desktop for Windows*.
+4. Install Docker Desktop.
+
+Play-With-Docker | http://play-with-docker.com 
+
+https://docs.docker.com/engine/install/ubuntu/
+
+
 Docker to oprogramowanie open-source pozwalajace na automatyzacje procesu wdrozenia aplikacji. Koncepcja podobna do maszyn wirtualnych, ale duzo lzjesza. 
 Kontener Docker’a to opakowanie pozwalajace na uruchamianie pojedynczych procesow. Uruchamiane  sa  w  jadrze systemu operacyjnego hosta co objawia sie 
 minimalizacja dodatkowych narzutow na czas wykonania, ale tez zmniejszeniem bezpieczenstwa uruchamianego kodu. Dzieki wykorzystaniu minimalnej przestrzeni dyskowej 
