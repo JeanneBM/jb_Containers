@@ -1,0 +1,7 @@
+sudo docker build /path
+
+sudo docker container run -it --name SomeName imageId
+
+To delete all images:
+sudo docker rmi -f $(docker images -qa)
+sudo chmod 666 /var/run/docker.sock
