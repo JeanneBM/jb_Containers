@@ -5,3 +5,16 @@ sudo docker container run -it --name SomeName imageId
 To delete all images:
 sudo docker rmi -f $(docker images -qa)
 sudo chmod 666 /var/run/docker.sock
+
+
+docker system prune
+
+You’ll be prompt you to confirm the operation:
+
+WARNING! This will remove:
+        - all stopped containers
+        - all networks not used by at least one container
+        - all dangling images
+        - all build cache
+Are you sure you want to continue? [y/N]
+
