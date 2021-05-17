@@ -18,3 +18,7 @@ WARNING! This will remove:
         - all build cache
 Are you sure you want to continue? [y/N]
 
+
+
+RUN pip install black
+RUN pip freeze\
