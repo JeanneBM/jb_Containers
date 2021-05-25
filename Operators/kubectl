@@ -1,0 +1,85 @@
+Step 1: Create a project
+
+$ mkdir memcached-operator
+
+$ cd memcached-operator
+
+$ operator-sdk init --domain=example.com --repo=github.com/example/memcached-operator
+Writing scaffold for you to edit...
+Get controller runtime:
+$ go get sigs.k8s.io/controller-runtime@v0.7.0
+Update go.mod:
+$ go mod tidy
+Running make:
+$ make
+go: creating new go.mod: module tmp
+Downloading sigs.k8s.io/controller-tools/cmd/controller-gen@v0.4.1
+go: found sigs.k8s.io/controller-tools/cmd/controller-gen in sigs.k8s.io/controller-tools v0.4.1
+/Users/username/workspace/projects/memcached-operator/bin/controller-gen object:headerFile="hack/boilerplate.go.txt" paths="./..."
+go fmt ./...
+go vet ./...
+go build -o bin/manager main.go
+
+
+Step 2: Create an API
+
+$ operator-sdk create api --group cache --version v1alpha1 --kind Memcached --resource=true --controller=true
+Writing scaffold for you to edit...
+api/v1alpha1/memcached_types.go
+controllers/memcached_controller.go
+Running make:
+$ make
+/Users/username/workspace/projects/memcached-operator/bin/controller-gen object:headerFile="hack/boilerplate.go.txt" paths="./..."
+go fmt ./...
+go vet ./...
+go build -o bin/manager main.go
+
+// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
+// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
+
+// MemcachedSpec defines the desired state of Memcached
+type MemcachedSpec struct {
+    // INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
+    // Important: Run "make" to regenerate code after modifying this file
+
+    // Foo is an example field of Memcached. Edit Memcached_types.go to remove/update
+    Foo string `json:"foo,omitempty"`
+}
+
+// MemcachedStatus defines the observed state of Memcached
+type MemcachedStatus struct {
+    // INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
+    // Important: Run "make" to regenerate code after modifying this file
+}
+
+// MemcachedSpec defines the desired state of Memcached
+type MemcachedSpec struct {
+    // +kubebuilder:validation:Minimum=0
+    // Size is the size of the memcached deployment
+    Size int32 `json:"size"`
+}
+
+// MemcachedStatus defines the observed state of Memcached
+type MemcachedStatus struct {
+    // Nodes are the names of the memcached pods
+    Nodes []string `json:"nodes"`
+}
+
+// Memcached is the Schema for the memcacheds API
+// +kubebuilder:subresource:status
+type Memcached struct {
+    metav1.TypeMeta   `json:",inline"`
+    metav1.ObjectMeta `json:"metadata,omitempty"`
+
+    Spec   MemcachedSpec   `json:"spec,omitempty"`
+    Status MemcachedStatus `json:"status,omitempty"`
+}
+
+$ make generate
+
+$ make manifests
+
+New:
+        config/crd/bases/cache.example.com_memcacheds.yaml
+        config/rbac/role.yaml
+
