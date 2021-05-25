@@ -1,0 +1,219 @@
+Module 3 - Building your first Ansible Operator
+
+Step 1: Create a project
+
+
+$ mkdir ansible-operator 
+$ cd ansible-operator 
+$ operator-sdk init --plugins=ansible --domain example.com
+
+Step 2: Create an API
+
+
+$ operator-sdk create api --group cache --version v1alpha1 --kind Memcached --generate-role
+
+
+Step 3: Configure the Ansible role
+
+
+Update roles/memcached/tasks/main.yml to contain the following:
+
+---
+- name: start memcached
+  community.kubernetes.k8s:
+    definition:
+      kind: Deployment
+      apiVersion: apps/v1
+      metadata:
+        name: '{{ ansible_operator_meta.name }}-memcached'
+        namespace: '{{ ansible_operator_meta.namespace }}'
+      spec:
+        replicas: "{{size}}"
+        selector:
+          matchLabels:
+            app: memcached
+        template:
+          metadata:
+            labels:
+              app: memcached
+          spec:
+            containers:
+            - name: memcached
+              command:
+              - memcached
+              - -m=64
+              - -o
+              - modern
+              - -v
+              image: "docker.io/memcached:1.4.36-alpine"
+              ports:
+                - containerPort: 11211
+
+
+
+Build and push the image to a Docker repository.
+
+$ export USERNAME=<docker-registry-username>
+$ make docker-build docker-push IMG=docker.io/$USERNAME/ansible-operator:1.0.0
+$ make deploy IMG=docker.io/$USERNAME/ansible-operator:1.0.0
+
+After a bit, you should see the pods containing the controller come up:
+
+$ kubectl get pods --n ansible-operator-system
+NAMESPACE                 NAME                                                   READY   STATUS              RESTARTS   AGE
+ansible-operator-system   ansible-operator-controller-manager-7b8555fb4b-wv8mh   0/2     ContainerCreating   0          14s
+
+Check to see that the CRD has been created:
+
+$ kubectl get crds
+NAME                          CREATED AT
+memcacheds.cache.example.com   2021-03-13T00:20:18Z
+
+And the RBAC to tie it all together:
+
+$ kubectl get clusterroles | grep ansible
+ansible-operator-manager-role                                          2021-03-13T00:20:18Z
+ansible-operator-metrics-reader                                        2021-03-13T00:20:18Z
+ansible-operator-proxy-role                                            2021-03-13T00:20:18Z
+$ kubectl get clusterrolebindings | grep ansible
+ansible-operator-manager-rolebinding                   ClusterRole/ansible-operator-manager-role                                          2m27s
+ansible-operator-proxy-rolebinding                     ClusterRole/ansible-operator-proxy-role                                            2m27s
+$ kubectl get roles -n ansible-operator-system
+NAME                                    CREATED AT
+ansible-operator-leader-election-role   2021-03-13T00:20:18Z
+$ kubectl get rolebindings -n ansible-operator-system
+NAME                                           ROLE                                         AGE
+ansible-operator-leader-election-rolebinding   Role/ansible-operator-leader-election-role   3m23s
+
+Once the controller pods are up and running, the operator is ready to use.
+Create a Memcached object
+
+Edit config/samples/cache_v1alpha1_memcached.yaml to include a size of 3:
+
+apiVersion: cache.example.com/v1alpha1
+kind: Memcached
+metadata:
+  name: memcached-sample
+spec:
+  size: 3
+
+Then, create the memcached object:
+
+$ kubectl apply -f config/samples/cache_v1alpha1_memcached.yaml
+
+You should see a deployment with three pods created:
+
+$ kubectl get deployments
+NAME                         READY   UP-TO-DATE   AVAILABLE   AGE
+memcached-sample-memcached   3/3     3            3           37s
+$ kubectl get pods
+NAMESPACE                 NAME                                                   READY   STATUS              RESTARTS   AGE
+default                   memcached-sample-memcached-54946946b-6chnn             0/1     ContainerCreating   0          38s
+default                   memcached-sample-memcached-54946946b-8qwbz             0/1     ContainerCreating   0          38s
+default                   memcached-sample-memcached-54946946b-k9z26             0/1     ContainerCreating   0          38s
+
+The Ansible information for the task is available in the status of the CR object:
+
+$ kubectl get memcached memcached-sample -o yaml
+apiVersion: cache.example.com/v1alpha1
+kind: Memcached
+metadata:
+  creationTimestamp: "2021-03-13T00:34:25Z"
+  generation: 1
+  managedFields:
+  - apiVersion: cache.example.com/v1alpha1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:status:
+        .: {}
+        f:conditions: {}
+    manager: ansible-operator
+    operation: Update
+    time: "2021-03-13T00:34:25Z"
+  - apiVersion: cache.example.com/v1alpha1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:spec:
+        .: {}
+        f:size: {}
+    manager: kubectl
+    operation: Update
+    time: "2021-03-13T00:34:25Z"
+  name: memcached-sample
+  namespace: default
+  resourceVersion: "1608"
+  uid: 4ebe4e9f-b41a-429b-89c3-e4eaebbd3554
+spec:
+  size: 3
+status:
+  conditions:
+  - ansibleResult:
+      changed: 0
+      completion: 2021-03-13T00:34:39.490213
+      failures: 0
+      ok: 1
+      skipped: 0
+    lastTransitionTime: "2021-03-13T00:34:25Z"
+    message: Awaiting next reconciliation
+    reason: Successful
+    status: "True"
+    type: Running
+
+Note the Ansible status in the Kubernetes status. The ansible-operator controller populated this data automatically. If you want to include additional data, you define those additional tasks in your Ansible role to collect the data and populate the Kubernetes status.
+
+Go ahead and change the size of the object to see the controller reconcile your object. Edit config/samples/cache_v1alpha1_memcached.yaml to have a size of 2:
+
+apiVersion: cache.example.com/v1alpha1
+kind: Memcached
+metadata:
+  name: memcached-sample
+spec:
+  size: 2
+
+And then apply it:
+
+$ kubectl apply -f config/samples/cache_v1alpha1_memcached.yaml
+
+And see the pods drop down to 2:
+
+$ kubectl get pods
+NAME                                         READY   STATUS        RESTARTS   AGE
+memcached-sample-memcached-54946946b-6chnn   1/1     Running       0          11m
+memcached-sample-memcached-54946946b-8qwbz   0/1     Terminating   0          11m
+memcached-sample-memcached-54946946b-k9z26   1/1     Running       0          11m
+
+Feel free to play around with it to get a feel for the behavior of the Custom Resource.
+Step 5: Cleanup
+
+When you're done, you can clean up the deployed operator by running the following commands:
+
+$ kubectl delete memcached memcached-sample
+$ make undeploy
+
+Debugging
+
+    Check the ansible-operator manager logs for more details on the deployment of the operator:
+
+$ kubectl logs deployment.apps/ansible-operator-controller-manager -n ansible-operator-system -c manager
+
+    If you are on a Mac and using homebrew, and you see the following error when running the make docker-build docker-push command:
+
+[...]
+env: Studio: No such file or directory
+make: *** [docker-build] Error 127
+
+Action: Edit the Makefile in the SHELL line as follows:
+
+SHELL := env PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin /bin/sh
+
+See this Operato SDK bug for more details.
+
+    If you are using an operating system which does not point sh to the bash shell (Ubuntu for example), and you see the following error when running the make docker-build docker-push command:
+
+failed to start the controlplane. retried 5 times: fork/exec /usr/local/kubebuilder/bin/etcd: no such file or directory occurred
+
+Action: Add the following line to the top of the Makefile:
+
+SHELL := /bin/bash
+
+See this Operator SDK bug for more details.
