@@ -83,3 +83,245 @@ New:
         config/crd/bases/cache.example.com_memcacheds.yaml
         config/rbac/role.yaml
 
+Step 3: Create a controller
+
+controllers/memcached_controller.go:
+
+// Reconcile is part of the main kubernetes reconciliation loop which aims to
+// move the current state of the cluster closer to the desired state.
+// TODO(user): Modify the Reconcile function to compare the state specified by
+// the Memcached object against the actual cluster state, and then
+// perform operations to make the cluster state reflect the state specified by
+// the user.
+//// For more details, check Reconcile and its Result here:
+// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.7.0/pkg/reconcile
+func (r *MemcachedReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+    _ = r.Log.WithValues("memcached", req.NamespacedName)
+
+    // your logic here
+
+    return ctrl.Result{}, nil
+}
+
+$ make manifests
+
+Step 4: Build and deploy your operator
+
+$ export USERNAME=<docker-username>
+
+$ make docker-build docker-push IMG=docker.io/$USERNAME/memcached-operator:v1.0.0
+
+/controllers: package k8s.io/api/apps/v1 imported from implicitly required module; to add missing requirements, run:
+    go get k8s.io/api/apps/v1@v0.19.2
+    
+$ make deploy IMG=docker.io/$USERNAME/memcached-operator:v1.0.0
+
+Our CRD type memcacheds.cache.example.com:
+
+$ kubectl get crds
+NAME                                          CREATED AT
+catalogsources.operators.coreos.com           2021-01-22T00:13:22Z
+clusterserviceversions.operators.coreos.com   2021-01-22T00:13:22Z
+installplans.operators.coreos.com             2021-01-22T00:13:22Z
+memcacheds.cache.example.com                   2021-02-06T00:52:38Z
+operatorgroups.operators.coreos.com           2021-01-22T00:13:22Z
+rbacsyncs.ibm.com                             2021-01-22T00:08:59Z
+subscriptions.operators.coreos.com            2021-01-22T00:13:22Z
+
+The Deployment and Pods running your controller:
+
+$ kubectl --namespace memcached-operator-system get deployments
+NAME                                    READY   UP-TO-DATE   AVAILABLE   AGE
+memcached-operator-controller-manager   1/1     1            1           2m18s
+
+$ kubectl --namespace memcached-operator-system get pods 
+NAME                                                     READY   STATUS    RESTARTS   AGE
+memcached-operator-controller-manager-76b588bbb5-wvl7b   2/2     Running   0          2m44s
+
+The RBAC that ties everything together:
+
+$ kubectl get clusterroles | grep memcached
+memcached-operator-manager-role                                        2021-02-06T00:52:38Z
+memcached-operator-metrics-reader                                      2021-02-06T00:52:39Z
+memcached-operator-proxy-role                                          2021-02-06T00:52:39Z
+
+$ kubectl get clusterrolebindings | grep memcached
+memcached-operator-manager-rolebinding                 ClusterRole/memcached-operator-manager-role                        3m
+memcached-operator-proxy-rolebinding                   ClusterRole/memcached-operator-proxy-role                          3m
+
+$ kubectl --namespace memcached-operator-system get roles
+NAME                                      CREATED AT
+memcached-operator-leader-election-role   2021-02-06T00:52:38Z
+
+$ kubectl --namespace memcached-operator-system get rolebindings
+NAME                                             ROLE                                           AGE
+memcached-operator-leader-election-rolebinding   Role/memcached-operator-leader-election-role   13m
+
+Once the images are pulled and the pods are running, your operator is ready to be used. Edit the sample YAML at config/samples/cache_v1alpha1_memcached.yaml to include a size integer like you defined in your custom resource spec:
+
+apiVersion: cache.example.com/v1alpha1
+kind: Memcached
+metadata:
+  name: memcached-sample
+spec:
+  size: 1
+
+And create a new instance of your custom resource:
+
+$ kubectl apply -f config/samples/cache_v1alpha1_memcached.yaml 
+memcached.cache.example.com/memcached-sample created
+
+And take a look at new custom resource and the objects being created in the background by your controller:
+
+$ kubectl get memcached
+NAME               AGE
+memcached-sample   18s
+
+$ kubectl get deployments
+NAME               READY   UP-TO-DATE   AVAILABLE   AGE
+memcached-sample   1/1     1            1           33s
+
+$ kubectl get pods
+NAME                               READY   STATUS    RESTARTS   AGE
+memcached-sample-9b765dfc8-2hvf8   1/1     Running   0          44s
+
+And if you take a look at your Memcached object, you can see the status is updated with the name of the running node:
+
+$ kubectl get memcached memcached-sample -o yaml
+apiVersion: cache.example.com/v1alpha1
+kind: Memcached
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cache.example.com/v1alpha1","kind":"Memcached","metadata":{"annotations":{},"name":"memcached-sample","namespace":"default"},"spec":{"size":1}}
+  creationTimestamp: "2021-03-29T19:22:53Z"
+  generation: 1
+  managedFields:
+  - apiVersion: cache.example.com/v1alpha1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .: {}
+          f:kubectl.kubernetes.io/last-applied-configuration: {}
+      f:spec:
+        .: {}
+        f:size: {}
+    manager: kubectl
+    operation: Update
+    time: "2021-03-29T19:22:53Z"
+  - apiVersion: cache.example.com/v1alpha1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:status:
+        .: {}
+        f:nodes: {}
+    manager: manager
+    operation: Update
+    time: "2021-03-29T19:22:58Z"
+  name: memcached-sample
+  namespace: default
+  resourceVersion: "1374"
+  uid: 63c7b1b1-1a75-49e6-8132-2164807a1b78
+spec:
+  size: 1
+status:
+  nodes:
+- memcached-sample-9b765dfc8-2hvf8
+
+To see your controller in action, add another node to your cluster. Change the size in config/samples/cache_v1alpha1_memcached.yaml to 2, and then run:
+
+$ kubectl apply -f config/samples/cache_v1alpha1_memcached.yaml
+memcached.cache.example.com/memcached-sample configured
+
+See the new pods created:
+
+$ kubectl get pods
+NAME                               READY   STATUS    RESTARTS   AGE
+memcached-sample-9b765dfc8-2hvf8   1/1     Running   0          50s
+memcached-sample-9b765dfc8-jdhlq   1/1     Running   0          3s
+
+And see that the Memcached object has again been updated with the name of the new pod:
+
+$ kubectl get memcached memcached-sample -o yaml
+apiVersion: cache.example.com/v1alpha1
+kind: Memcached
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cache.example.com/v1alpha1","kind":"Memcached","metadata":{"annotations":{},"name":"memcached-sample","namespace":"default"},"spec":{"size":1}}
+  creationTimestamp: "2021-03-29T19:22:53Z"
+  generation: 2
+  managedFields:
+  - apiVersion: cache.example.com/v1alpha1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .: {}
+          f:kubectl.kubernetes.io/last-applied-configuration: {}
+      f:spec:
+        .: {}
+        f:size: {}
+    manager: kubectl
+    operation: Update
+    time: "2021-03-29T19:22:53Z"
+  - apiVersion: cache.example.com/v1alpha1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:status:
+        .: {}
+        f:nodes: {}
+    manager: manager
+    operation: Update
+    time: "2021-03-29T19:22:58Z"
+  name: memcached-sample
+  namespace: default
+  resourceVersion: "1712"
+  uid: 63c7b1b1-1a75-49e6-8132-2164807a1b78
+spec:
+  size: 2
+status:
+  nodes:
+  - memcached-sample-9b765dfc8-2hvf8
+  - memcached-sample-9b765dfc8-jdhlq
+
+There you have it, a working Golang operator with all the moving parts. Feel free to play around with the operator to get a feel for it.
+Step 5: Cleanup
+
+When you're done, you can clean up the deployed operator by running these commands:
+
+$ kubectl delete memcached memcached-sample
+
+$ make undeploy
+
+Next up
+
+In Module 2, I cover Helm operators, what they are, and how to build one.
+Debugging
+
+    Check the operator manager logs for more details on the deployment of the operator:
+
+$ kubectl logs deployment.apps/memcached-operator-controller-manager -n memcached-operator-system -c manager
+
+    If you are on a Mac and using homebrew, and you see the following error when running the make docker-build docker-push command:
+
+[...]
+env: Studio: No such file or directory
+make: *** [docker-build] Error 127
+
+Action: Edit the Makefile in the SHELL line as follows:
+
+SHELL := env PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin /bin/sh
+
+See operator-sdk bug for more details.
+
+    If you are using an OS which does not point sh to the bash shell (Ubuntu for example), and you see the following error when running the make docker-build docker-push command:
+
+failed to start the controlplane. retried 5 times: fork/exec /usr/local/kubebuilder/bin/etcd: no such file or directory occurred
+
+Action: Add the following line to the top of the Makefile:
+
+SHELL := /bin/bash
+
+See operator-sdk bug for more details.
