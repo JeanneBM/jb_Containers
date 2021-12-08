@@ -15,7 +15,7 @@ Vagrant.configure("2") do |config|
   
   config.vm.provision "shell", privileged: true, inline: <<-EOF
     adduser --disabled-password --gecos "" joanna
-    usermod -aG sudo joanna
+    usermod -aG wheel joanna
     mkdir -p /home/joanna/.ssh/
     cp  /home/joanna/.ssh
     chown -R joanna:joanna /home/joanna
