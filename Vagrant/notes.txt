@@ -55,3 +55,13 @@ DEVICE=eth4
 PEERDNS=no
 #VAGRANT-END
 [vagrant@l2310 network-scripts]$
+
+Vagrant assumes there is an available NAT device on eth0. This ensures that Vagrant always has a way of communicating with the guest machine.
+
+[root@l2310 network-scripts]# cat ifcfg-eth0
+DEVICE="eth0"
+BOOTPROTO="dhcp"
+ONBOOT="yes"
+TYPE="Ethernet"
+PERSISTENT_DHCLIENT="yes"
+[root@l2310 network-scripts]#
