@@ -65,3 +65,69 @@ ONBOOT="yes"
 TYPE="Ethernet"
 PERSISTENT_DHCLIENT="yes"
 [root@l2310 network-scripts]#
+
+[root@l2310 network-scripts]# ifconfig
+docker0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+        inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
+        inet6 fe80::42:73ff:fef9:ac2d  prefixlen 64  scopeid 0x20<link>
+        ether 02:42:73:f9:ac:2d  txqueuelen 0  (Ethernet)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 5  bytes 402 (402.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 10.0.2.15  netmask 255.255.255.0  broadcast 10.0.2.255
+        inet6 fe80::5054:ff:fe27:8b50  prefixlen 64  scopeid 0x20<link>
+        ether 52:54:00:27:8b:50  txqueuelen 1000  (Ethernet)
+        RX packets 14466  bytes 9526897 (9.0 MiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 9291  bytes 743352 (725.9 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+eth1: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.44.44  netmask 255.255.255.0  broadcast 192.168.44.255
+        inet6 fe80::a00:27ff:fe5b:4158  prefixlen 64  scopeid 0x20<link>
+        ether 08:00:27:5b:41:58  txqueuelen 1000  (Ethernet)
+        RX packets 68  bytes 4638 (4.5 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 32  bytes 2392 (2.3 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+eth2: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.44.44  netmask 255.255.255.0  broadcast 192.168.44.255
+        inet6 fe80::a00:27ff:fe70:43ad  prefixlen 64  scopeid 0x20<link>
+        ether 08:00:27:70:43:ad  txqueuelen 1000  (Ethernet)
+        RX packets 68  bytes 4638 (4.5 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 31  bytes 2322 (2.2 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+eth3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.44.44  netmask 255.255.255.0  broadcast 192.168.44.255
+        inet6 fe80::a00:27ff:fe9e:dd6c  prefixlen 64  scopeid 0x20<link>
+        ether 08:00:27:9e:dd:6c  txqueuelen 1000  (Ethernet)
+        RX packets 68  bytes 4638 (4.5 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 31  bytes 2322 (2.2 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+eth4: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.44.44  netmask 255.255.255.0  broadcast 192.168.44.255
+        inet6 fe80::a00:27ff:fec4:a1d8  prefixlen 64  scopeid 0x20<link>
+        ether 08:00:27:c4:a1:d8  txqueuelen 1000  (Ethernet)
+        RX packets 68  bytes 4638 (4.5 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 31  bytes 2322 (2.2 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+[root@l2310 network-scripts]#
