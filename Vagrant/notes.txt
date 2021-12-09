@@ -57,6 +57,8 @@ PEERDNS=no
 [vagrant@l2310 network-scripts]$
 
 Vagrant assumes there is an available NAT device on eth0. This ensures that Vagrant always has a way of communicating with the guest machine.
+NAT – domyślne ustawienie VirtualBox, które powoduje że system goszczony zachowuje się jakby był podłączony do routera, 
+który udostępnia nam połączenie sieciowe. W zupełności wystarcza to do pracy maszyny w internecie, jednak posiada swoje ograniczenia w perspektywie połączeń sieciowych z wirtualną maszyną ze środowisk fizycznych
 
 [root@l2310 network-scripts]# cat ifcfg-eth0
 DEVICE="eth0"
