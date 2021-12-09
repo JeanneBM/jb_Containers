@@ -133,3 +133,8 @@ lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 
 [root@l2310 network-scripts]#
+
+
+https://www.czarnaowca.it/2021/02/eth0-eno0-czy-ens0p0-nazewnictwo-interfejsow-sieciowych/
+https://websetnet.net/pl/virtualbox-nat-network-configuration-tutorial/
+
