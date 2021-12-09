@@ -138,6 +138,6 @@ lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
 https://www.czarnaowca.it/2021/02/eth0-eno0-czy-ens0p0-nazewnictwo-interfejsow-sieciowych/
 https://websetnet.net/pl/virtualbox-nat-network-configuration-tutorial/
 https://www.dedoimedo.com/computers/virtualbox-network-sharing.html
-
+https://wiki.dataspace.pl/baza-wiedzy/protokoly/protokol-nat/
 
 
