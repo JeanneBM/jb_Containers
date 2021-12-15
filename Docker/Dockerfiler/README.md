@@ -19,3 +19,7 @@ Restart
 
 https://devhints.io/docker-compose
 
+
+
+Start tutorial:
+docker run -d -p 80:80 docker/getting-started
