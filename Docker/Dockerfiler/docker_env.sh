@@ -7,3 +7,6 @@ winpty docker run --name selenium_node_chrom -it --rm -p 4444:4444 -d selenium/s
 winpty docker run --name Jenkins -it --rm  -p 8080:8080 -p 50000:50000 -d jenkins/jenkins
 docker network create -d bridge docker_env_network
 winpty docker run -it --rm --net docker_env_network --name dockernginx -d nginx
+
+#docker pull jenkins/jenkins
+#docker run -p 8080:8080 --name=jenkins-master -d jenkins/jenkins
