@@ -14,7 +14,7 @@ RUN cd Repo
 RUN git init
 
 RUN mkdir -p /var/run/sshd ; chmod -rx /var/run/sshd
-RUN touch /etc/ssh/sshd_config; chmod -rxw /etc/ssh/sshd_config
+#RUN touch /etc/ssh/sshd_config; chmod -rxw /etc/ssh/sshd_config
 RUN ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key
 
 RUN sed -ri 's/#PermitRootLogin yes/PermitRootLogin yes/g' /etc/ssh/sshd_config
