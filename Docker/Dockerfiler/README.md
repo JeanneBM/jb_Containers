@@ -15,3 +15,6 @@ sudo groupadd docker
 sudo usermod -aG docker $USER 
 
 Restart 
+
+
+https://devhints.io/docker-compose
