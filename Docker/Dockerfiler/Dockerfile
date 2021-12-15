@@ -3,6 +3,8 @@ MAINTAINER JeanneBM
 
 WORKDIR /GIT
 
+#RUN dnf install openssh-server sudo nano epel-release openssl certmonger; systemctl enable sshd.service -y
+
 RUN dnf update -y
 RUN dnf install git -y
 RUN git --version
