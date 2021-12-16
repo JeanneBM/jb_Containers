@@ -1,1 +1,59 @@
+version: '3'
 
+services:
+    jenkins:
+        image: jenkins/jenkins:jdk11
+        container_name: jenkins
+        ports:
+            - "8880:8080"
+            - "50000:50000"
+        volumes:
+            - ../volumes/jenkins:/var/jenkins_home
+        networks:
+            - docker_network
+
+    ubuntu:
+        depends_on:
+            - jenkins
+        container_name: ubuntu
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock    
+        build:
+            context: ../dockerfiles/slave
+        command: java -jar agent.jar -jnlpUrl http://localhost:8880/computer/Slave/slave-agent.jnlp -secret b49012dfaf76dcfd23d161045e494746c953117d04b43391871bc25415738185 -workDir "/home/"
+        networks:
+            - docker_network
+  
+    selenium_hub:
+        image: selenium/hub
+        container_name: seleniumhub
+        ports:
+            - "4444:4444"
+        networks:
+            - docker_network
+
+    selenium_firefox:
+        image: selenium/node-firefox
+        container_name: selenium_node_firefox
+        depends_on:
+            - selenium_hub
+        environment: 
+            - HUB_HOST=seleniumhub
+            - HUB_PORT=4444
+        networks:
+            - docker_network
+            
+     selenium_chrome:
+        image: selenium/node-chrome
+        container_name: selenium_node_chrom
+        depends_on:
+            - selenium_hub
+        environment: 
+            - HUB_HOST=seleniumhub
+            - HUB_PORT=4444
+        networks:
+            - docker_network
+
+networks:
+    docker_network:
+        driver: bridge
