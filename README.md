@@ -1,3 +1,8 @@
+https://www.youtube.com/watch?v=tj3xYFA6Q2o next generation plugin
+
+
+
+
 https://frontstack.pl/docker-komendy/
 
 I. Budowa Linuxa a Docker
