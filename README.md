@@ -1,3 +1,6 @@
+First introduction to Docker : The future of Linux Containers https://www.youtube.com/watch?v=wW9CAH9nSLs 
+
+
 https://www.youtube.com/watch?v=tj3xYFA6Q2o next generation plugin
 
 
