@@ -1,0 +1,47 @@
+docker images
+=================================================================
+cd /root/webapp-color/
+docker build -t webapp-color . 
+
+$ cat Dockerfile 
+FROM python:3.6
+
+RUN pip install flask
+
+COPY . /opt/
+
+EXPOSE 8080
+
+WORKDIR /opt
+
+ENTRYPOINT ["python", "app.py"]
+$ 
+=================================================================
+docker run -p 8282:8080 webapp-color
+
+Container with image 'webapp-color'
+Container Port: 8080
+Host Port: 8282
+
+=================================================================
+
+$ cat Dockerfile
+FROM python:3.6-alpine
+
+RUN pip install flask
+
+COPY . /opt/
+
+EXPOSE 8080
+
+WORKDIR /opt
+
+ENTRYPOINT ["python", "app.py"]
+$ docker build -t webapp-color:lite .
+
+=================================================================
+
+Run an instance of the new image webapp-color:lite and publish port 8080 on the container to 8383 on the host:
+docker run -p 8383:8080 webapp-color:lite
+
+

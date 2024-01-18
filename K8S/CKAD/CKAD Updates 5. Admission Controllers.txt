@@ -1,0 +1,13 @@
+kubectl exec -it kube-apiserver-controlplane -n kube-system -- kube-apiserver -h | grep 'enable-admission-plugins'
+/etc/kubernetes/manifests/kube-apiserver.yaml
+
+kubectl run nginx --image nginx -n blue
+
+Edit /etc/kubernetes/manifests/kube-apiserver.yaml and add NamespaceAutoProvision admission controller to --enable-admission-plugins list
+Note: Once you update kube-apiserver yaml file then please wait few mins for the kube-apiserver to restart completely.
+
+kubectl run nginx --image nginx -n blue
+
+--disable-admission-plugins=DefaultStorageClass
+
+ps -ef | grep kube-apiserver | grep admission-plugins

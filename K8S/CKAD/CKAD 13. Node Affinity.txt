@@ -1,0 +1,107 @@
+4: Create a new deployment named blue with the nginx image and 3 replicas.
+
+kubectl create deployment blue --image=nginx --replicas=3
+
+5:
+
+controlplane ~ ➜  kubectl describe node controlplane | grep -i taints
+Taints:             <none>
+
+controlplane ~ ➜  kubectl describe node node01 | grep -i taints
+Taints:             <none>
+
+controlplane ~ ➜  
+
+6: Set Node Affinity to the deployment to place the pods on node01 only.
+
+Name: blue
+Replicas: 3
+Image: nginx
+NodeAffinity: requiredDuringSchedulingIgnoredDuringExecution
+Key: color
+value: blue
+
+
+controlplane ~ ➜  kubectl delete deploy blue
+deployment.apps "blue" deleted
+
+controlplane ~ ➜  kubectl create -f pod.yaml 
+deployment.apps/blue created
+
+controlplane ~ ➜  cat pod.yaml 
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blue
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      run: nginx
+  template:
+    metadata:
+      labels:
+        run: nginx
+    spec:
+      containers:
+      - image: nginx
+        imagePullPolicy: Always
+        name: nginx
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: color
+                operator: In
+                values:
+                - blue
+
+controlplane ~ ➜  
+
+8: Create a new deployment named red with the nginx image and 2 replicas, and ensure it gets placed on the controlplane node only.
+Use the label key - node-role.kubernetes.io/control-plane - which is already set on the controlplane node.
+
+
+Name: red
+Replicas: 2
+Image: nginx
+NodeAffinity: requiredDuringSchedulingIgnoredDuringExecution
+Key: node-role.kubernetes.io/control-plane
+
+
+controlplane ~ ➜  vim pod2.yaml
+
+controlplane ~ ✖ kubectl create -f pod2.yaml 
+deployment.apps/red created
+
+controlplane ~ ✖ cat pod2.yaml 
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: red
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      run: nginx
+  template:
+    metadata:
+      labels:
+        run: nginx
+    spec:
+      containers:
+      - image: nginx
+        imagePullPolicy: Always
+        name: nginx
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: node-role.kubernetes.io/control-plane
+                operator: Exists
+
+controlplane ~ ➜  

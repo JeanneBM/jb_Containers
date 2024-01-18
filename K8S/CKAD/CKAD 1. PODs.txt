@@ -1,0 +1,98 @@
+PODs:
+
+kubectl get pod = kubectle get pods
+kubectl run nginx --image=nginx
+kubectl describe pod | grep image
+kubectl describe pod newpods-j7vsf
+kubectl get pod webapp
+kubectl describe pod webapp | grep image
+kubectl describe pod webapp | grep agentx
+kubectl delete pod webapp
+
+12:
+controlplane ~ ➜  kubectl run redis --image=redis123 --dry-run -o yaml
+W1204 15:43:11.151261   14273 helpers.go:692] --dry-run is deprecated and can be replaced with --dry-run=client.
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: redis
+  name: redis
+spec:
+  containers:
+  - image: redis123
+    name: redis
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+
+controlplane ~ ➜  kubectl run redis --image=redis123 --dry-run=client -o yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: redis
+  name: redis
+spec:
+  containers:
+  - image: redis123
+    name: redis
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+
+controlplane ~ ➜  kubectl run redis --image=redis123 --dry-run=client -o yaml > redis.yaml
+
+controlplane ~ ➜  kubectl create -f redis.yaml
+pod/redis created
+
+controlplane ~ ➜  cat redis.yaml 
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: redis
+  name: redis
+spec:
+  containers:
+  - image: redis123
+    name: redis
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+
+controlplane ~ ➜  
+
+13:
+Now change the image on this pod to redis.
+Once done, the pod should be in a running state
+
+controlplane ~ ➜  kubectl run redis --image=redis --dry-run=client -o yaml > redis.yaml
+
+controlplane ~ ➜  cat redis.yaml 
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: redis
+  name: redis
+spec:
+  containers:
+  - image: redis
+    name: redis
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+
+controlplane ~ ➜  kubectl create -f redis.yaml
+pod/redis created
+
+controlplane ~ ➜  

@@ -1,0 +1,201 @@
+controlplane ~ ➜  kubectl exec webapp -- cat /log/app.log
+[2024-01-11 11:42:30,126] INFO in event-simulator: USER1 is viewing page1
+[2024-01-11 11:42:31,127] INFO in event-simulator: USER1 is viewing page1
+[2024-01-11 11:42:32,128] INFO in event-simulator: USER2 logged in
+[2024-01-11 11:42:33,129] INFO in event-simulator: USER1 is viewing page3
+[2024-01-11 11:42:34,130] INFO in event-simulator: USER1 logged out
+[2024-01-11 11:42:35,131] WARNING in event-simulator: USER5 Failed to Login as the account is locked due to MANY FAILED ATTEMPTS.
+[2024-01-11 11:42:35,131] INFO in event-simulator: USER4 is viewing page1
+[2024-01-11 11:42:36,132] INFO in event-simulator: USER1 logged in
+[2024-01-11 11:42:37,133] INFO in event-simulator: USER1 is viewing page3
+[2024-01-11 11:42:38,134] WARNING in event-simulator: USER7 Order failed as the item is OUT OF STOCK.
+[2024-01-11 11:42:38,134] INFO in event-simulator: USER4 is viewing page1
+[2024-01-11 11:42:39,135] INFO in event-simulator: USER4 is viewing page1
+[2024-01-11 11:42:40,136] WARNING in event-simulator: USER5 Failed to Login as the account is locked due to MANY FAILED ATTEMPTS.
+[2024-01-11 11:42:40,136] INFO in event-simulator: USER1 logged out
+[2024-01-11 11:42:41,137] INFO in event-simulator: USER3 is viewing page2
+[2024-01-11 11:42:42,138] INFO in event-simulator: USER1 is viewing page2
+
+controlplane ~ ➜  
+
+kubectl get po webapp -o yaml > webapp.yaml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: webapp
+spec:
+  containers:
+  - name: event-simulator
+    image: kodekloud/event-simulator
+    env:
+    - name: LOG_HANDLERS
+      value: file
+    volumeMounts:
+    - mountPath: /log
+      name: log-volume
+
+  volumes:
+  - name: log-volume
+    hostPath:
+      # directory location on host
+      path: /var/log/webapp
+      # this field is optional
+      type: Directory
+
+========================================================================================
+sample.yaml:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: webapp
+spec:
+  containers:
+  - name: event-simulator
+    image: kodekloud/event-simulator
+    env:
+    - name: LOG_HANDLERS
+      value: file
+    volumeMounts:
+    - mountPath: /log
+      name: log-volume
+
+  volumes:
+  - name: log-volume
+    hostPath:
+      # directory location on host
+      path: /var/log/webapp
+      # this field is optional
+      type: Directory
+
+=================================================================================================
+
+kubectl replace -f webapp.yaml --force
+
+controlplane ~ ➜  
+=================================================================================================
+controlplane ~ ➜  cat sample.yaml 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: webapp
+spec:
+  containers:
+  - name: event-simulator
+    image: kodekloud/event-simulator
+    env:
+    - name: LOG_HANDLERS
+      value: file
+    volumeMounts:
+    - mountPath: /log
+      name: log-volume
+
+  volumes:
+  - name: log-volume
+    hostPath:
+      # directory location on host
+      path: /var/log/webapp
+      # this field is optional
+      type: Directory
+
+controlplane ~ ➜  
+
+=================================================================================================
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-log
+spec:
+  persistentVolumeReclaimPolicy: Retain
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 100Mi
+  hostPath:
+    path: /pv/log
+
+=================================================================================================
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: claim-log-1
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Mi
+
+=================================================================================================
+
+kubectl get pvc
+kubectl get pv
+
+controlplane ~ ➜  kubectl get pvc
+NAME          STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+claim-log-1   Pending                                                     103s
+
+controlplane ~ ➜  kubectl get pv
+NAME     CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS   REASON   AGE
+pv-log   100Mi      RWX            Retain           Available                                   2m24s
+
+controlplane ~ ➜  
+
+=================================================================================================
+
+controlplane ~ ➜  kubectl get pv,pvc
+NAME                      CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS   REASON   AGE
+persistentvolume/pv-log   100Mi      RWX            Retain           Available                                   2m48s
+
+NAME                                STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+persistentvolumeclaim/claim-log-1   Pending                                                     2m9s
+
+controlplane ~ ➜  
+
+=================================================================================================
+
+$ kubectl delete pvc claim-log-1
+
+sample3.yaml:
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: claim-log-1
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Mi
+
+=================================================================================================
+$ kubectl delete po webapp
+
+sample4.yaml:
+apiVersion: v1
+kind: Pod
+metadata:
+  name: webapp
+spec:
+  containers:
+  - name: event-simulator
+    image: kodekloud/event-simulator
+    env:
+    - name: LOG_HANDLERS
+      value: file
+    volumeMounts:
+    - mountPath: /log
+      name: log-volume
+
+  volumes:
+  - name: log-volume
+    persistentVolumeClaim:
+      claimName: claim-log-1
+
+=================================================================================================
+
+kubectl delete pvc claim-log-1 
+kubectl delete pod webapp --force

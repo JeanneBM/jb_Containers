@@ -1,0 +1,58 @@
+controlplane ~ ➜  kubectl get pod
+NAME       READY   STATUS    RESTARTS   AGE
+elephant   1/1     Running   0          10s
+lion       1/1     Running   0          10s
+rabbit     1/1     Running   0          10s
+
+controlplane ~ ➜  git clone https://github.com/kodekloudhub/kubernetes-metrics-server.git
+Cloning into 'kubernetes-metrics-server'...
+remote: Enumerating objects: 31, done.
+remote: Counting objects: 100% (19/19), done.
+remote: Compressing objects: 100% (19/19), done.
+remote: Total 31 (delta 8), reused 0 (delta 0), pack-reused 12
+Unpacking objects: 100% (31/31), 8.06 KiB | 1.01 MiB/s, done.
+
+controlplane ~ ➜  kubectl create -f .
+error: no objects passed to create
+
+controlplane ~ ✖ kubectl create -f .
+error: no objects passed to create
+
+controlplane ~ ✖ ls
+kubernetes-metrics-server  sample.yaml
+
+controlplane ~ ➜  cd kubernetes-metrics-server/
+
+controlplane kubernetes-metrics-server on  master ➜  kubectl create -f .
+clusterrole.rbac.authorization.k8s.io/system:aggregated-metrics-reader created
+clusterrolebinding.rbac.authorization.k8s.io/metrics-server:system:auth-delegator created
+rolebinding.rbac.authorization.k8s.io/metrics-server-auth-reader created
+apiservice.apiregistration.k8s.io/v1beta1.metrics.k8s.io created
+serviceaccount/metrics-server created
+deployment.apps/metrics-server created
+service/metrics-server created
+clusterrole.rbac.authorization.k8s.io/system:metrics-server created
+clusterrolebinding.rbac.authorization.k8s.io/system:metrics-server created
+
+controlplane kubernetes-metrics-server on  master ➜  kubectl top node
+error: metrics not available yet
+
+controlplane kubernetes-metrics-server on  master ✖ kubectl top node
+NAME           CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%   
+controlplane   299m         0%     1179Mi          0%        
+node01         128m         0%     333Mi           0%        
+
+
+controlplane kubernetes-metrics-server on  master ➜  kubectl top pod
+NAME       CPU(cores)   MEMORY(bytes)   
+elephant   17m          32Mi            
+lion       1m           18Mi            
+rabbit     113m         252Mi           
+
+controlplane kubernetes-metrics-server on  master ➜  kubectl top pod
+NAME       CPU(cores)   MEMORY(bytes)   
+elephant   15m          32Mi            
+lion       1m           18Mi            
+rabbit     108m         252Mi           
+
+controlplane kubernetes-metrics-server on  master ➜  

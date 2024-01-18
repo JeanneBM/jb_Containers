@@ -1,0 +1,123 @@
+5:
+
+controlplane ~ ➜  kubectl get pod webapp-color -o yaml > pod.yaml 
+Error from server (NotFound): pods "webapp-color" not found
+
+controlplane ~ ✖ ls
+pod.yaml     sample.yaml
+
+controlplane ~ ➜  vim pod.yaml 
+
+controlplane ~ ➜  cat pod.yaml 
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    name: webapp-color
+  name: webapp-color
+  namespace: default
+spec:
+  containers:
+  - env:
+    - name: APP_COLOR
+      value: green
+    image: kodekloud/webapp-color
+    name: webapp-color
+
+controlplane ~ ➜  
+
+
+controlplane ~ ➜  kubectl create -f pod.yaml 
+pod/webapp-color created
+
+controlplane ~ ➜  
+
+ConfigMaps:
+
+controlplane ~ ➜  kubectl get cm 
+NAME               DATA   AGE
+kube-root-ca.crt   1      14m
+db-config          3      16s
+
+controlplane ~ ➜  kubectl describe cm db-config 
+Name:         db-config
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+
+Data
+====
+DB_HOST:
+----
+SQL01.example.com
+DB_NAME:
+----
+SQL01
+DB_PORT:
+----
+3306
+
+BinaryData
+====
+
+Events:  <none>
+
+controlplane ~ ➜  
+
+
+controlplane ~ ➜  kubectl create configmap  webapp-config-map --from-literal=APP_COLOR=darkblue --from-literal=APP_OTHER=disregard
+configmap/webapp-config-map created
+
+controlplane ~ ➜  kubectl get configmap
+NAME                DATA   AGE
+kube-root-ca.crt    1      18m
+db-config           3      3m36s
+webapp-config-map   2      21s
+
+controlplane ~ ➜  kubectl get configmaps
+NAME                DATA   AGE
+kube-root-ca.crt    1      18m
+db-config           3      3m39s
+webapp-config-map   2      24s
+
+controlplane ~ ➜  kubectl get cm
+NAME                DATA   AGE
+kube-root-ca.crt    1      18m
+db-config           3      3m50s
+webapp-config-map   2      35s
+
+controlplane ~ ➜  
+
+10:
+
+controlplane ~ ➜  kubectl create -f pod2.yaml 
+pod/webapp-color created
+
+controlplane ~ ➜  vim pod2.yaml 
+
+[1]+  Stopped                 vim pod2.yaml
+
+controlplane ~ ✦ ✖ cat pod2.yaml 
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    name: webapp-color
+  name: webapp-color
+  namespace: default
+spec:
+  containers:
+  - env:
+    - name: APP_COLOR
+      valueFrom:
+       configMapKeyRef:
+         name: webapp-config-map
+         key: APP_COLOR
+    image: kodekloud/webapp-color
+    name: webapp-color
+
+controlplane ~ ✦ ➜  
+
+11:
+

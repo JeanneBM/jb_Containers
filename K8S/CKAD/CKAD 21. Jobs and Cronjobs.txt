@@ -1,0 +1,74 @@
+controlplane ~ ✖ kubectl describe pod throw-dice-pod --image=kodekloud/throw-dice
+error: unknown flag: --image
+See 'kubectl describe --help' for usage.
+
+controlplane ~ ✖ kubectl create job throw-dice-job --image=kodekloud/throw-dice --dry-run=client -o yaml  > throw-dice-job.yaml
+
+controlplane ~ ➜  
+
+
+controlplane ~ ✦ ✖ cat throw-dice-job.yaml 
+apiVersion: batch/v1
+https://kubernetes.io/docs/concepts/workloads/controllers/job/
+
+kind: Job
+metadata:
+  creationTimestamp: null
+  name: throw-dice-job
+spec:
+  backoffLimit: 6
+  template:
+    metadata:
+      creationTimestamp: null
+    spec:
+      containers:
+      - image: kodekloud/throw-dice
+        name: throw-dice-job
+        resources: {}
+      restartPolicy: Never
+status: {}
+
+controlplane ~ ✦ ➜  history
+    1  kubectl run pod throw-dice-pod.yaml 
+    2  kubectl apply -f throw-dice-pod.yaml 
+    3  kubectl get pod 
+    4  kubect describe throw-dice-pod.yaml 
+    5  kubect describe pod throw-dice-pod 
+    6  kubectlt describe pod throw-dice-pod 
+    7  kubectl describe pod throw-dice-pod 
+    8  kubectl create job throw-dice-job --image=kodekloud/throw-dice --dry-run=client -o yaml  > throw-dice-job.yaml
+    9  cat throw-dice-job.yaml 
+   10  vim throw-dice-job.yaml 
+   11  kubectl apply -f throw-dice-job.yaml 
+   12  vim throw-dice-job.yaml 
+   13  cat throw-dice-job.yaml 
+   14  history
+
+controlplane ~ ✦ ➜  
+
+controlplane ~ ✦ ➜ kubectl logs throw-dice-job
+
+controlplane ~ ✦ ✖ kubectl apply -f throw-cron.yaml 
+cronjob.batch/throw-dice-cron-job created
+
+controlplane ~ ✦ ➜  cat throw-cron.yaml 
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: throw-dice-cron-job
+spec:
+  schedule: "30 21 * * *"
+  jobTemplate:
+    spec:
+      completions: 3
+      parallelism: 3
+      backoffLimit: 25 # This is so the job does not quit before it succeeds.
+      template:
+        spec:
+          containers:
+          - name: throw-dice
+            image: kodekloud/throw-dice
+          restartPolicy: Never
+
+controlplane ~ ✦ ➜  
+

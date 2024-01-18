@@ -1,0 +1,94 @@
+10:
+
+controlplane ~ ➜  kubectl get deployments
+NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
+frontend-deployment   0/4     4            0           2m56s
+
+controlplane ~ ➜  ls
+deployment-definition-1.yaml  sample.yaml
+
+controlplane ~ ➜  kubectl create -f deployment-definition-1.yaml 
+Error from server (BadRequest): error when creating "deployment-definition-1.yaml": deployment in version "v1" cannot be handled as a Deployment: no kind "deployment" is registered for version "apps/v1" in scheme "k8s.io/apimachinery@v1.27.1-k3s1/pkg/runtime/scheme.go:100"
+
+controlplane ~ ✖ kubectl explain deployment
+GROUP:      apps
+KIND:       Deployment							
+VERSION:    v1
+
+DESCRIPTION:
+    Deployment enables declarative updates for Pods and ReplicaSets.
+    
+FIELDS:
+  apiVersion    <string>
+    APIVersion defines the versioned schema of this representation of an object.
+    Servers should convert recognized schemas to the latest internal value, and
+    may reject unrecognized values. More info:
+    https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+
+  kind  <string>
+    Kind is a string value representing the REST resource this object
+    represents. Servers may infer this from the endpoint the client submits
+    requests to. Cannot be updated. In CamelCase. More info:
+    https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+
+  metadata      <ObjectMeta>
+    Standard object's metadata. More info:
+    https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+
+  spec  <DeploymentSpec>
+    Specification of the desired behavior of the Deployment.
+
+  status        <DeploymentStatus>
+    Most recently observed status of the Deployment.
+
+
+
+controlplane ~ ➜  vim deployment-definition-1.yaml // kind as not with capital letter "deployment"
+
+controlplane ~ ➜  kubectl create -f deployment-definition-1.yaml 
+deployment.apps/deployment-1 created
+
+controlplane ~ ➜  
+
+11:
+
+
+controlplane ~ ➜  ls
+deployment-definition-1.yaml  sample.yaml
+
+controlplane ~ ➜  cat deployment-definition-1.yaml 
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: busybox-pod
+  template:
+    metadata:
+      labels:
+        name: busybox-pod
+    spec:
+      containers:
+      - name: busybox-container
+        image: busybox888
+        command:
+        - sh
+        - "-c"
+        - echo Hello Kubernetes! && sleep 3600
+
+
+controlplane ~ ➜  cp deployment-definition-1.yaml deployment-mine.yaml
+
+controlplane ~ ➜  vim deployment-mine.yaml 
+
+controlplane ~ ➜  kubectl create -f deployment-mine.yaml 
+The Deployment "httpd-frontend" is invalid: spec.template.spec.containers[0].name: Invalid value: "httpd:2.4-alpine-container": a lowercase RFC 1123 label must consist of lower case alphanumeric characters or '-', and must start and end with an alphanumeric character (e.g. 'my-name',  or '123-abc', regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?')
+
+controlplane ~ ✖ vim deployment-mine.yaml 
+
+controlplane ~ ➜  kubectl create -f deployment-mine.yaml 
+deployment.apps/httpd-frontend created

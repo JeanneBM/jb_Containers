@@ -1,0 +1,89 @@
+2:
+controlplane ~ ➜  kubectl describe ns research
+Name:         research
+Labels:       kubernetes.io/metadata.name=research
+Annotations:  <none>
+Status:       Active
+
+No resource quota.
+
+No LimitRange resource.
+
+controlplane ~ ➜  kubectl get pods --namespace=research // == kubectl get pods -n=research
+NAME    READY   STATUS             RESTARTS      AGE
+dna-2   0/1     CrashLoopBackOff   4 (66s ago)   2m50s
+dna-1   0/1     CrashLoopBackOff   4 (64s ago)   2m50s
+
+controlplane ~ ➜  
+
+3:
+controlplane ~ ➜  kubectl run redis --image=redis -n=finance
+pod/redis created
+
+4:
+
+controlplane ~ ➜  kubectl get pods --all-namespaces | grep blue
+marketing       blue                                     1/1     Running            0               10m
+
+controlplane ~ ➜  
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+ 
+controlplane ~ ➜  kubectl get ns 
+NAME              STATUS   AGE
+default           Active   60m
+kube-system       Active   60m
+kube-public       Active   60m
+kube-node-lease   Active   60m
+finance           Active   53m
+marketing         Active   53m
+dev               Active   53m
+prod              Active   53m
+manufacturing     Active   53m
+research          Active   53m
+
+controlplane ~ ➜  kubectl get pods -n=research
+NAME    READY   STATUS             RESTARTS        AGE
+dna-1   0/1     CrashLoopBackOff   15 (2m5s ago)   54m
+dna-2   0/1     CrashLoopBackOff   15 (117s ago)   54m
+
+controlplane ~ ➜  kubectl run redis --image=redis --namespace=finance
+pod/redis created
+
+controlplane ~ ➜  kubectl get pods --all-namespaces
+NAMESPACE       NAME                                     READY   STATUS             RESTARTS         AGE
+kube-system     local-path-provisioner-957fdf8bc-xdpg2   1/1     Running            0                62m
+kube-system     coredns-77ccd57875-xfkxl                 1/1     Running            0                62m
+kube-system     helm-install-traefik-crd-4n95z           0/1     Completed          0                62m
+kube-system     metrics-server-54dc485875-jz5x5          1/1     Running            0                62m
+kube-system     helm-install-traefik-j7bq6               0/1     Completed          1                62m
+kube-system     svclb-traefik-a3299dcd-phbkn             2/2     Running            0                61m
+kube-system     traefik-84745cf649-bxr84                 1/1     Running            0                61m
+dev             redis-db                                 1/1     Running            0                55m
+marketing       redis-db                                 1/1     Running            0                55m
+manufacturing   red-app                                  1/1     Running            0                55m
+marketing       blue                                     1/1     Running            0                55m
+finance         payroll                                  1/1     Running            0                55m
+research        dna-1                                    0/1     CrashLoopBackOff   15 (3m19s ago)   55m
+research        dna-2                                    0/1     CrashLoopBackOff   15 (3m11s ago)   55m
+finance         redis                                    1/1     Running            0                30s
+
+controlplane ~ ➜  kubectl get pods --all-namespaces | grep blue
+marketing       blue                                     1/1     Running            0                55m
+
+controlplane ~ ➜  kubectl get pods -n=marketing
+NAME       READY   STATUS    RESTARTS   AGE
+redis-db   1/1     Running   0          56m
+blue       1/1     Running   0          56m
+
+controlplane ~ ➜  kubectl get svc -n=marketing
+NAME           TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+blue-service   NodePort   10.43.161.116   <none>        8080:30082/TCP   56m
+db-service     NodePort   10.43.254.74    <none>        6379:31684/TCP   56m
+
+controlplane ~ ➜  kubectl get svc -n=dev
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+db-service   ClusterIP   10.43.127.225   <none>        6379/TCP   57m
+
+controlplane ~ ➜  
+

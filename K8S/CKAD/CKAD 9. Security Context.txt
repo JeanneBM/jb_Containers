@@ -1,0 +1,110 @@
+1:
+
+controlplane ~ ✦ ✖ kubectl exec ubuntu-sleeper -- whoami
+root
+
+controlplane ~ ✦ ➜  
+
+2:
+
+controlplane ~ ✦ ➜  kubectl exec ubuntu-sleeper -- chown 1010
+chown: missing operand after '1010'
+Try 'chown --help' for more information.
+command terminated with exit code 1
+
+controlplane ~ ✦ ✖ kubectl delete po ubuntu-sleeper 
+pod "ubuntu-sleeper" deleted
+
+controlplane ~ ✦ ➜  ls
+multi-pod.yaml  sample.yaml
+
+controlplane ~ ✦ ➜  vim pod.yaml
+
+controlplane ~ ✦ ➜  kubectl create -f pod.yaml
+pod/ubuntu-sleeper created
+
+controlplane ~ ✦ ➜  kubectl delete po ubuntu-sleeper 
+pod "ubuntu-sleeper" deleted
+
+controlplane ~ ✦ ➜  kubectl apply -f pod.yaml 
+pod/ubuntu-sleeper created
+
+controlplane ~ ✦ ➜  cat pod.yaml 
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ubuntu-sleeper
+  namespace: default
+spec:
+  securityContext:
+    runAsUser: 1010
+  containers:
+  - command:
+    - sleep
+    - "4800"
+    image: ubuntu
+    name: ubuntu-sleeper
+
+controlplane ~ ✦ ➜ 
+
+
+3:
+
+controlplane ~ ✦ ➜  kubectl delete po ubuntu-sleeper
+pod "ubuntu-sleeper" deleted
+
+controlplane ~ ✦ ➜  vim pod2.yaml
+
+controlplane ~ ✦ ➜  kubectl create -f pod2.yaml 
+pod/ubuntu-sleeper created
+
+controlplane ~ ✦ ➜  cat pod2.yaml 
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ubuntu-sleeper
+  namespace: default
+spec:
+  containers:
+  - command:
+    - sleep
+    - "4800"
+    image: ubuntu
+    name: ubuntu-sleeper
+    securityContext:
+      capabilities:
+        add: ["SYS_TIME"]
+
+controlplane ~ ✦ ➜  
+
+6:
+
+controlplane ~ ✦ ➜  kubectl delete po ubuntu-sleeper
+pod "ubuntu-sleeper" deleted
+
+controlplane ~ ✦ ➜  vim pod2.yaml 
+
+controlplane ~ ✦ ➜  kubectl create -f pod2.yaml 
+pod/ubuntu-sleeper created
+
+controlplane ~ ✦ ➜  cat pod2.yaml 
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ubuntu-sleeper
+  namespace: default
+spec:
+  containers:
+  - command:
+    - sleep
+    - "4800"
+    image: ubuntu
+    name: ubuntu-sleeper
+    securityContext:
+      capabilities:
+        add: ["SYS_TIME", "NET_ADMIN"]
+
+controlplane ~ ✦ ➜  

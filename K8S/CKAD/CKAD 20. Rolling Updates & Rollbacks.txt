@@ -1,0 +1,20 @@
+controlplane ~ ➜  history
+    1  kubectl get pods 
+    2  kubectl get services
+    3  ./curl-test.sh 
+    4  kubectl get pods
+    5  kubectl get pods | wc
+    6  kubectl describe pod frontend-58f7796bbb-92n2q 
+    7  kubectl get deploy
+    8  kubectl describe deploy
+    9  kubectl describe deploy | grep strategy
+   10  kubectl edit deployment frontend
+   11  ./curl-test.sh 
+   12  kubectl edit deployment frontend
+   13  kubectl describe deploy frontend 
+   14  kubectl edit deployment frontend
+   15  kubectl edit deployment frontend
+   16  ./curl-test.sh 
+   17  history
+
+controlplane ~ ➜  

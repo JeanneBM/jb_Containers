@@ -1,0 +1,61 @@
+controlplane ~ ✖ kubectl run nginx-pod --image=nginx:alpine
+pod/nginx-pod created
+
+controlplane ~ ✖ kubectl run redis --image=redis:alpine --labels="tier=db"
+pod/redis created
+
+4:
+controlplane ~ ✖ kubectl expose pod redis --port=6379 --name redis-service --dry-run=client -o yaml
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    tier: db
+  name: redis-service
+spec:
+  ports:
+  - port: 6379
+    protocol: TCP
+    targetPort: 6379
+  selector:
+    tier: db
+status:
+  loadBalancer: {}
+  
+controlplane ~ ✖ kubectl expose pod redis --port 6379 --name redis-service
+service/redis-service exposed
+
+5:
+
+controlplane ~ ➜  kubectl create deployment webapp --image=kodekloud/webapp-color --replicas=3 
+deployment.apps/webapp created
+
+controlplane ~ ➜  
+
+6:
+
+controlplane ~ ➜  kubectl get deploy
+NAME     READY   UP-TO-DATE   AVAILABLE   AGE
+webapp   3/3     3            3           2m23s
+
+controlplane ~ ➜  kubectl run custom-nginx --image=nginx --port=8080
+pod/custom-nginx created
+
+7:
+
+controlplane ~ ➜  kubectl create ns dev-ns
+namespace/dev-ns created
+
+8:
+
+controlplane ~ ➜  kubectl create deploy redis-deploy --namespace=dev-ns --image=redis --replicas=2
+deployment.apps/redis-deploy created
+
+9:
+
+controlplane ~ ✖ kubectl run httpd --image=httpd:alpine --port=80 --expose=true
+service/httpd created
+pod/httpd created
+
+

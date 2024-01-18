@@ -1,0 +1,128 @@
+controlplane ~ ➜  ls
+crash-app.sh  curl-test.sh  freeze-app.sh
+
+controlplane ~ ➜  cat curl-test.sh 
+for i in {1..20}; do
+   kubectl exec --namespace=kube-public curl -- sh -c 'test=`wget -qO- -T 2  http://webapp-service.default.svc.cluster.local:8080/ready 2>&1` && echo "$test OK" || echo "Failed"';
+   echo ""
+done
+controlplane ~ ➜  ./curl-test.sh 
+Message from simple-webapp-1 : I am ready! OK
+
+Message from simple-webapp-1 : I am ready! OK
+
+Message from simple-webapp-1 : I am ready! OK
+
+...
+
+
+6:
+
+controlplane ~ ➜  ls
+crash-app.sh  curl-test.sh  freeze-app.sh
+
+controlplane ~ ➜  vim simple-webapp-2.yaml
+
+controlplane ~ ➜  kubectl replace -f simple-webapp-2.yaml --force
+pod "simple-webapp-2" deleted
+pod/simple-webapp-2 replaced
+
+controlplane ~ ➜  cat simple-webapp-2.yaml 
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2021-08-01T04:55:35Z"
+  labels:
+    name: simple-webapp
+  name: simple-webapp-2
+  namespace: default
+spec:
+  containers:
+  - env:
+    - name: APP_START_DELAY
+      value: "80"
+    image: kodekloud/webapp-delayed-start
+    imagePullPolicy: Always
+    name: simple-webapp
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+    readinessProbe:
+      httpGet:
+        path: /ready
+        port: 8080
+
+controlplane ~ ➜  
+
+12:
+
+controlplane ~ ➜  kubectl replace -f simple-webapp-1.yaml --force
+pod "simple-webapp-1" deleted
+pod/simple-webapp-1 replaced
+
+controlplane ~ ➜  kubectl replace -f simple-webapp-2.yaml --force
+pod "simple-webapp-2" deleted
+pod/simple-webapp-2 replaced
+
+controlplane ~ ➜  cat simple-webapp-1.yaml 
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    name: simple-webapp
+  name: simple-webapp-1
+  namespace: default
+spec:
+  containers:
+  - env:
+    - name: APP_START_DELAY
+      value: "80"
+    image: kodekloud/webapp-delayed-start
+    imagePullPolicy: Always
+    name: simple-webapp
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+    readinessProbe:
+      httpGet:
+        path: /ready
+        port: 8080
+    livenessProbe:
+      httpGet:
+        path: /live
+        port: 8080
+      periodSeconds: 1
+      initialDelaySeconds: 80
+
+controlplane ~ ➜  cat simple-webapp-2.yaml 
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    name: simple-webapp
+  name: simple-webapp-2
+  namespace: default
+spec:
+  containers:
+  - env:
+    - name: APP_START_DELAY
+      value: "80"
+    image: kodekloud/webapp-delayed-start
+    imagePullPolicy: Always
+    name: simple-webapp
+    ports:
+    - containerPort: 8080
+      protocol: TCP
+    readinessProbe:
+      httpGet:
+        path: /ready
+        port: 8080
+    livenessProbe:
+      httpGet:
+        path: /live
+        port: 8080
+      periodSeconds: 1
+      initialDelaySeconds: 80
+
+controlplane ~ ➜  
+

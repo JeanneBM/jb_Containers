@@ -1,0 +1,30 @@
+controlplane ~ ➜  uname -a
+Linux controlplane 5.4.0-1106-gcp #115~18.04.1-Ubuntu SMP Mon May 22 20:46:39 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
+
+Install Helm:
+curl https://baltocdn.com/helm/signing.asc | apt-key add -
+apt-get install apt-transport-https --yes
+echo "deb https://baltocdn.com/helm/stable/debian/ all main" | tee /etc/apt/sources.list.d/helm-stable-debian.list
+apt-get update
+apt-get install helm
+
+controlplane ~ ➜  helm --help | grep client
+  env         helm client environment information
+  version     print the client version information
+      --burst-limit int                 client-side default throttling limit (default 100)
+
+controlplane ~ ➜  helm --help | grep version
+  version     print the client version information
+
+controlplane ~ ➜  helm version
+version.BuildInfo{Version:"v3.13.1", GitCommit:"3547a4b5bf5edb5478ce352e18858d8a552a4110", GitTreeState:"clean", GoVersion:"go1.20.8"}
+
+controlplane ~ ➜  
+
+controlplane ~ ➜  helm --help | grep verbose
+      --debug                           enable verbose output
+
+controlplane ~ ➜ 
+
+
+

@@ -1,0 +1,216 @@
+kubectl get replicasets
+
+kubectl describe replicaset new-replica-set
+
+kubectl describe pod new-replica-set-2gwrv 
+
+11:
+controlplane ~ ➜  kubectl create -f /root/replicaset-definition-1.yaml 
+error: resource mapping not found for name: "replicaset-1" namespace: "" from "/root/replicaset-definition-1.yaml": no matches for kind "ReplicaSet" in version "v1"
+ensure CRDs are installed first
+
+controlplane ~ ✖ cat /root/replicaset-definition-1.yaml 
+apiVersion: v1												//apiVersion: apps/v1 - correctly
+kind: ReplicaSet
+metadata:
+  name: replicaset-1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        tier: frontend
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+
+
+controlplane ~ ➜  kubectl explain replicaset
+GROUP:      apps
+KIND:       ReplicaSet
+VERSION:    v1
+
+DESCRIPTION:
+    ReplicaSet ensures that a specified number of pod replicas are running at
+    any given time.
+    
+FIELDS:
+  apiVersion    <string>
+    APIVersion defines the versioned schema of this representation of an object.
+    Servers should convert recognized schemas to the latest internal value, and
+    may reject unrecognized values. More info:
+    https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+
+  kind  <string>
+    Kind is a string value representing the REST resource this object
+    represents. Servers may infer this from the endpoint the client submits
+    requests to. Cannot be updated. In CamelCase. More info:
+    https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+
+  metadata      <ObjectMeta>
+    If the Labels of a ReplicaSet are empty, they are defaulted to be the same
+    as the Pod(s) that the ReplicaSet manages. Standard object's metadata. More
+    info:
+    https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+
+  spec  <ReplicaSetSpec>
+    Spec defines the specification of the desired behavior of the ReplicaSet.
+    More info:
+    https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+
+  status        <ReplicaSetStatus>
+    Status is the most recently observed status of the ReplicaSet. This data may
+    be out of date by some window of time. Populated by the system. Read-only.
+    More info:
+    https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+
+
+
+controlplane ~ ➜  vim /root/replicaset-definition-1.yaml 
+
+controlplane ~ ➜  kubectl create -f /root/replicaset-definition-1.yaml 
+replicaset.apps/replicaset-1 created
+
+controlplane ~ ➜  
+
+12:
+controlplane ~ ➜  kubectl create -f /root/replicaset-definition-2.yaml 
+The ReplicaSet "replicaset-2" is invalid: spec.template.metadata.labels: Invalid value: map[string]string{"tier":"nginx"}: `selector` does not match template `labels`
+
+controlplane ~ ✖ cat replicaset-definition-2.yaml 
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: replicaset-2
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        tier: nginx						//should be: "tier: frontend"
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+
+
+controlplane ~ ➜  cat replicaset-definition-1.yaml 
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: replicaset-1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        tier: frontend
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+
+
+controlplane ~ ➜  vim replicaset-definition-2.yaml 
+
+controlplane ~ ➜  kubectl create -f /root/replicaset-definition-2.yaml 
+replicaset.apps/replicaset-2 created
+
+controlplane ~ ➜  
+
+13:
+controlplane ~ ➜  kubectl get replicaset // == kubectl get rs
+NAME              DESIRED   CURRENT   READY   AGE
+new-replica-set   4         4         0       27m
+replicaset-1      2         2         2       4m51s
+replicaset-2      2         2         2       103s
+
+controlplane ~ ➜  kubectl delete replicaset replicaset-1 replicaset-2 
+replicaset.apps "replicaset-1" deleted
+replicaset.apps "replicaset-2" deleted
+
+controlplane ~ ➜  
+
+14:
+
+controlplane ~ ➜  kubectl edit rs
+replicaset.apps/new-replica-set edited
+
+controlplane ~ ➜  kubectl get pods
+NAME                    READY   STATUS             RESTARTS   AGE
+new-replica-set-89c85   0/1     ImagePullBackOff   0          41m
+new-replica-set-jmks6   0/1     ImagePullBackOff   0          41m
+new-replica-set-tlhk2   0/1     ImagePullBackOff   0          41m
+new-replica-set-46ll7   0/1     ImagePullBackOff   0          25m
+
+controlplane ~ ➜  kubectl get rs
+NAME              DESIRED   CURRENT   READY   AGE
+new-replica-set   4         4         0       41m
+
+controlplane ~ ➜  kubectl delete pod new-replica-set-*
+Error from server (NotFound): pods "new-replica-set-*" not found
+
+controlplane ~ ✖ kubectl delete pod new-replica-set-89c85 new-replica-set-jmks6 new-replica-set-tlhk2 new-replica-set-46ll7 
+pod "new-replica-set-89c85" deleted
+pod "new-replica-set-jmks6" deleted
+pod "new-replica-set-tlhk2" deleted
+pod "new-replica-set-46ll7" deleted
+
+controlplane ~ ➜  kubectl get podsNAME                    READY   STATUS    RESTARTS   AGE
+new-replica-set-sjn8s   1/1     Running   0          6s
+new-replica-set-ds8xx   1/1     Running   0          6s
+new-replica-set-gj9lp   1/1     Running   0          6s
+new-replica-set-7rp9x   1/1     Running   0          6s
+
+15:
+
+controlplane ~ ✖ kubectl get pods
+NAME                    READY   STATUS    RESTARTS   AGE
+new-replica-set-sjn8s   1/1     Running   0          2m7s
+new-replica-set-ds8xx   1/1     Running   0          2m7s
+new-replica-set-gj9lp   1/1     Running   0          2m7s
+new-replica-set-7rp9x   1/1     Running   0          2m7s
+
+controlplane ~ ➜  kubectl edit rs new-replica-set 
+replicaset.apps/new-replica-set edited
+
+controlplane ~ ➜  kubectl get pods
+NAME                    READY   STATUS    RESTARTS   AGE
+new-replica-set-sjn8s   1/1     Running   0          2m41s
+new-replica-set-ds8xx   1/1     Running   0          2m41s
+new-replica-set-gj9lp   1/1     Running   0          2m41s
+new-replica-set-7rp9x   1/1     Running   0          2m41s
+new-replica-set-pmcls   1/1     Running   0          6s
+
+controlplane ~ ➜  
+
+16:
+
+controlplane ~ ➜  kubectl get pods
+NAME                    READY   STATUS    RESTARTS   AGE
+new-replica-set-sjn8s   1/1     Running   0          2m41s
+new-replica-set-ds8xx   1/1     Running   0          2m41s
+new-replica-set-gj9lp   1/1     Running   0          2m41s
+new-replica-set-7rp9x   1/1     Running   0          2m41s
+new-replica-set-pmcls   1/1     Running   0          6s
+
+controlplane ~ ➜  kubectl edit rs new-replica-set 
+replicaset.apps/new-replica-set edited
+
+controlplane ~ ➜  kubectl get pods
+NAME                    READY   STATUS        RESTARTS   AGE
+new-replica-set-sjn8s   1/1     Running       0          3m45s
+new-replica-set-7rp9x   1/1     Running       0          3m45s
+new-replica-set-pmcls   1/1     Terminating   0          70s
+new-replica-set-gj9lp   1/1     Terminating   0          3m45s
+new-replica-set-ds8xx   1/1     Terminating   0          3m45s

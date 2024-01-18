@@ -1,0 +1,33 @@
+kubectl describe svc frontend-service
+
+controlplane ~ ✦ ➜  kubectl describe svc frontend-service 
+Name:                     frontend-service
+Namespace:                default
+Labels:                   app=myapp
+Annotations:              <none>
+Selector:                 app=frontend
+Type:                     NodePort
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.104.27.129
+IPs:                      10.104.27.129
+Port:                     <unset>  8080/TCP
+TargetPort:               8080/TCP
+NodePort:                 <unset>  30080/TCP
+Endpoints:                10.244.0.4:8080,10.244.0.5:8080,10.244.0.6:8080 + 2 more...
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
+
+
+kubectl scale deployment --replicas=1 frontend-v2
+
+controlplane ~ ✦ ✖ kubectl scale deployment frontend --replicas=0; kubectl scale deployment frontend-v2 --replicas=5
+deployment.apps/frontend scaled
+deployment.apps/frontend-v2 scaled
+
+controlplane ~ ✦ ➜  kubectl delete deploy frontend
+deployment.apps "frontend" deleted
+
+controlplane ~ ✦ ➜  
+

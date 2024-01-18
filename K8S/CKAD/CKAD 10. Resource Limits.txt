@@ -1,0 +1,20 @@
+controlplane ~ ➜  history
+    1  kubectl describe rabbit 
+    2  kubectl describe podrabbit 
+    3  kubectl describe pod rabbit 
+    4  kubectl describe pod rabbit | grep CPU
+    5  kubectl get ns 
+    6  kubectl get rabbit
+    7  kubectl get pod rabbit
+    8  kubectl edit pod rabbit
+    9  kubectl delete pod rabbit 
+   10  kubectl describe pod elephant 
+   11  kubectl edit pod elephant 
+   12  kubectl edit pod elephant 
+   13  kubectl replace --force -f /tmp/kubectl-edit-2219967416.yaml
+   14  history
+   15  kubectl get pod
+   16  kubectl delete pod elephant 
+   17  history
+
+controlplane ~ ➜  

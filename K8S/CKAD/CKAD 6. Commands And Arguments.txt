@@ -1,0 +1,74 @@
+3:
+
+apiVersion: v1
+kind: Pod 
+metadata:
+  name: ubuntu-sleeper-2
+spec:
+  containers:
+  - name: ubuntu
+    image: ubuntu
+    command: [ "sleep"]
+    args: ["5000"] 
+	
+	
+controlplane ~ ➜  kubectl create -f ubuntu-sleeper-2.yaml 
+pod/ubuntu-sleeper-2 created
+
+4:
+
+controlplane ~ ➜  kubectl create -f ubuntu-sleeper-3.yaml 
+pod/ubuntu-sleeper-3 created
+
+controlplane ~ ➜  vim ubuntu-sleeper-3.yaml 
+
+apiVersion: v1
+kind: Pod 
+metadata:
+  name: ubuntu-sleeper-3
+spec:
+  containers:
+  - name: ubuntu
+    image: ubuntu
+    command:
+    - "sleep"
+    - "1200"
+	
+5:
+
+controlplane ~ ➜  vim ubuntu-sleeper-3.yaml 
+
+controlplane ~ ➜  kubectl edit pod ubuntu-sleeper-3
+error: pods "ubuntu-sleeper-3" is invalid
+A copy of your changes has been stored to "/tmp/kubectl-edit-1792397840.yaml"
+error: Edit cancelled, no valid changes were saved.
+
+controlplane ~ ✖ kubectl replace --force -f /tmp/kubectl-edit-1792397840.yaml
+pod "ubuntu-sleeper-3" deleted
+pod/ubuntu-sleeper-3 replaced
+
+controlplane ~ ➜  
+
+9:
+
+controlplane ~/webapp-color-3 ➜  cat webapp-color-pod-2.yaml 
+apiVersion: v1 
+kind: Pod 
+metadata:
+  name: webapp-green
+  labels:
+      name: webapp-green 
+spec:
+  containers:
+  - name: simple-webapp
+    image: kodekloud/webapp-color
+    command: ["python", "app.py"]
+    args: ["--color", "pink"]
+
+10:
+ 
+controlplane ~/webapp-color-3 ➜  kubectl run webapp-green --image=kodekloud/webapp-color -- --color=green
+pod/webapp-green created
+
+controlplane ~/webapp-color-3 ➜  
+

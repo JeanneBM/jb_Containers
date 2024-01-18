@@ -1,0 +1,57 @@
+kubectl get node
+kubectl describe node
+
+3: Create a taint on node01 with key of spray, value of mortein and effect of NoSchedule
+
+kubectl taint nodes node01 spray=mortein:NoSchedule
+
+4:
+kubectl run mosquito --image=nginx
+kubectl get pod
+kubectl describe pod mosquito 
+vim pod.yaml
+kubectl create -f pod.yaml 
+
+7:
+
+controlplane ~ ➜  vim pod.yaml
+
+controlplane ~ ➜  kubectl create -f pod.yaml 
+pod/bee created
+
+controlplane ~ ➜  kubectl get pods
+NAME       READY   STATUS    RESTARTS   AGE
+bee        1/1     Running   0          23s
+mosquito   0/1     Pending   0          2m18s
+pod        0/1     Pending   0          3m7s
+
+controlplane ~ ➜  vim pod.yaml 
+
+[1]+  Stopped                 vim pod.yaml
+
+controlplane ~ ✦ ✖ cat pod.yaml
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bee
+spec:
+  containers:
+  - image: nginx
+    name: bee
+  tolerations:
+  - key: spray
+    value: mortein
+    effect: NoSchedule
+    operator: Equal
+	
+	
+8:
+
+Notice the bee pod was scheduled on node node01 despite the taint.
+
+10:
+
+kubectl taint node controlplane node-role.kubernetes.io/control-plane:NoSchedule-
+
+
