@@ -19,6 +19,113 @@ kubectl get pods --namespace=research // == kubectl get pods -n=research
 kubectl run redis --image=redis -n=finance
 kubectl get pods --all-namespaces | grep blue
 kubectl run nginx-pod --image=nginx:alpine
+kubectl edit pod elephant 
+kubectl replace --force -f /tmp/kubectl-edit-2219967416.yaml
 
 kubectl expose pod redis --port=6379 --name redis-service --dry-run=client -o yaml > sample.yaml
+kubectl expose pod redis --port 6379 --name redis-service
+kubectl create deployment webapp --image=kodekloud/webapp-color --replicas=3 
+kubectl run custom-nginx --image=nginx --port=8080
+
+kubectl create ns dev-ns
+kubectl create deploy redis-deploy --namespace=dev-ns --image=redis --replicas=2
+kubectl run httpd --image=httpd:alpine --port=80 --expose=true
+kubectl run webapp-green --image=kodekloud/webapp-color -- --color=green
+
+kubectl get cm 
+kubectl create configmap  webapp-config-map --from-literal=APP_COLOR=darkblue --from-literal=APP_OTHER=disregard
+kubectl get configmaps
+
+kubectl get secrets
+kubectl describe secret dashboard-token 
+kubectl create secret generic db-secret --from-literal=DB_Host=sql01 --from-literal=DB_User=root --from-literal=DB_Password=password123
+kubectl exec ubuntu-sleeper -- whoami
+kubectl exec webapp -- cat /log/app.log
+
+kubectl get sa
+kubectl create sa -f dashboard-sa
+kubectl create token dashboard-sa
+kubectl edit deploy web-dashboard 
+
+kubectl get node
+kubectl describe node
+
+kubectl taint node controlplane node-role.kubernetes.io/control-plane:NoSchedule-
+kubectl create deployment blue --image=nginx --replicas=3
+kubectl describe node controlplane | grep -i taints
+
+kubectl -n elastic-stack logs kibana
+kubectl exec --namespace=kube-public curl -- sh -c 'test=`wget -qO- -T 2  http://webapp-service.default.svc.cluster.local:8080/ready 2>&1` && echo "$test OK" || echo "Failed"'
+
+vim simple-webapp-2.yaml
+kubectl replace -f simple-webapp-2.yaml --force
+
+kubectl logs webapp-1
+
+kubectl get pods --selector env=dev
+kubectl get pods --selector env=dev --no-headers | wc -l
+kubectl get pods --selector bu=finance
+kubectl get all --selector env=prod
+kubectl get all --selector env=prod,bu=finance,tier=frontend
+
+kubectl get services
+kubectl get service
+kubectl get all -A
+kubectl get deploy --namespace app-space
+kubectl get ingress --all-namespaces
+kubectl describe ingress --namespace app-space
+
+kubectl create serviceaccount ingress-nginx --namespace ingress-nginx 
+kubectl create serviceaccount ingress-nginx-admission --namespace ingress-nginx
+
+kubectl get pv,pvc
+
+
+docker images
+docker build -t webapp-color . 
+docker run -p 8282:8080 webapp-color
+
+kubectl describe pod kube-apiserver-controlplane -n kube-system
+kubectl get roles
+kubectl get -A roles
+kubectl describe rolebinding kube-proxy -n kube-system
+kubectl create role developer --namespace=default --verb=list,create,delete --resource=pods
+kubectl create rolebinding dev-user-binding --namespace=default --role=developer --user=dev-user
+
+kubectl edit role developer -n blue
+
+kubectl get clusterroles | wc
+kubectl describe clusterrolebinding cluster-admin
+
+kubectl exec -it kube-apiserver-controlplane -n kube-system -- kube-apiserver -h 
+
+kubectl create ns webhook-demo
+
+==============================================================================================================
+kubectl -n webhook-demo create secret tls webhook-server-tls \
+    --cert "/root/keys/webhook-server-tls.crt" \
+    --key "/root/keys/webhook-server-tls.key"
+
+==============================================================================================================
+
+
+kubectl describe svc frontend-service
+kubectl scale deployment frontend --replicas=0 
+kubectl scale deployment frontend-v2 --replicas=5
+
+uname -a
+
+Install Helm:
+curl https://baltocdn.com/helm/signing.asc | apt-key add -
+apt-get install apt-transport-https --yes
+echo "deb https://baltocdn.com/helm/stable/debian/ all main" | tee /etc/apt/sources.list.d/helm-stable-debian.list
+apt-get update
+apt-get install helm
+
+
+
+
+
+
+
 
