@@ -1,1 +1,24 @@
+kubectl get pod = kubectle get pods
+kubectl run nginx --image=nginx
+kubectl describe pod | grep image
+kubectl describe pod newpods-j7vsf
+kubectl get pod webapp
+kubectl describe pod webapp | grep image
+kubectl describe pod webapp | grep agentx
+kubectl delete pod webapp
+
+kubectl run redis --image=redis123 --dry-run=client -o yaml > redis.yaml
+kubectl create -f redis.yaml
+
+kubectl get replicasets
+kubectl describe replicaset new-replica-set
+kubectl create -f /root/replicaset-definition-1.yaml 
+kubectl explain replicaset
+
+kubectl get pods --namespace=research // == kubectl get pods -n=research
+kubectl run redis --image=redis -n=finance
+kubectl get pods --all-namespaces | grep blue
+kubectl run nginx-pod --image=nginx:alpine
+
+kubectl expose pod redis --port=6379 --name redis-service --dry-run=client -o yaml > sample.yaml
 
