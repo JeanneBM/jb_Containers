@@ -1,0 +1,136 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: internal-policy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      name: internal
+  policyTypes:
+  - Egress
+  - Ingress
+  ingress:
+    - {}
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          name: mysql
+    ports:
+    - protocol: TCP
+      port: 3306
+
+  - to:
+    - podSelector:
+        matchLabels:
+          name: payroll
+    ports:
+    - protocol: TCP
+      port: 8080
+
+  - ports:
+    - port: 53
+      protocol: UDP
+    - port: 53
+      protocol: TCP
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  name: ingress-wear-watch
+  namespace: app-space
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          service:
+            name: wear-service
+            port: 
+              number: 8080
+        path: /wear
+        pathType: Prefix
+      - backend:
+          service:
+            name: video-service
+            port: 
+              number: 8080
+        path: /stream
+        pathType: Prefix
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-ingress
+  namespace: critical-space
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /pay
+        pathType: Prefix
+        backend:
+          service:
+           name: pay-service
+           port:
+            number: 8282
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-wear-watch
+  namespace: app-space
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /wear
+        pathType: Prefix
+        backend:
+          service:
+           name: wear-service
+           port: 
+            number: 8080
+      - path: /watch
+        pathType: Prefix
+        backend:
+          service:
+           name: video-service
+           port:
+            number: 8080
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-space
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /video-service
+        pathType: Prefix
+        backend:
+          serviceName: ingress-svc
+          servicePort: 80
+
+-----------------------------------------------------------------------------------------------------------------------------
