@@ -1,3 +1,23 @@
+kubectl run redis --image="redis:alpine" --labels="tier=db"
+kubectl expose pod redis --name redis-service --port=6379
+kubectl run custom-nginx --image=nginx --port=8080
+kubectl create deployment redis-deploy --namespace=dev-ns --image=redis --replicas=2
+kubectl expose pod httpd --name httpd --port=80 --target-port=80
+kubectl run ubuntu-sleeper-2 --image=ubuntu --command sleep 5000
+kubectl run webapp-color --labels="name=webapp-color" --env="APP_COLOR=green" --image=kodekloud/webapp-color
+kubectl create cm webapp-config-map --from-literal=APP_COLOR=darkblue --from-literal=APP_OTHER=disregard
+kubectl create secret generic db-secret --from-literal=DB_Host=sql01 --from-literal=DB_User=root --from-literal=DB_Password=password123
+kubectl get po -o yaml
+kubectl create pv my-pv --capacity=10Gi --access-modes=ReadWriteOnce --storage-class=my-storage-class --hostpath= /mnt/my-disk
+
+
+forEnv
+securityContext
+brak flagi --limits= --storage-class --capacity=10Gi --access-modes=ReadWriteOnce --storage-class=my-storage-class --hostpath= /mnt/my-disk (?!)
+====================================================================================================================================================
+
+
+
 kubectl get pod = kubectle get pods
 kubectl run nginx --image=nginx
 kubectl describe pod | grep image
