@@ -14,7 +14,10 @@ kubectl create pv my-pv --capacity=10Gi --access-modes=ReadWriteOnce --storage-c
 forEnv
 securityContext
 brak flagi --limits= --storage-class --capacity=10Gi --access-modes=ReadWriteOnce --storage-class=my-storage-class --hostpath= /mnt/my-disk (?!) // replaced by --overrides
+
 kubectl run curl -n a0008 --image=mcr.microsoft.com/azure-cli --dry-run=client -o yaml --overrides='{"spec":{"containers":[{"name":"curl","resources":{"limits":{"cpu":"200m"}}}]}}'
+kubectl get secret bleh -o go-template='{{range $k,$v := .data}}{{printf "%s: " $k}}{{if not $v}}{{$v}}{{else}}{{$v | base64decode}}{{end}}{{"\n"}}{{end}}'
+
 
 ====================================================================================================================================================
 
