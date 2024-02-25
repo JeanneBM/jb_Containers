@@ -11,7 +11,7 @@ kubectl get po -o yaml
 kubectl create pv my-pv --capacity=10Gi --access-modes=ReadWriteOnce --storage-class=my-storage-class --hostpath= /mnt/my-disk
 
 
-forEnv
+forEnv // kubectl set env 
 securityContext
 brak flagi --limits= --storage-class --capacity=10Gi --access-modes=ReadWriteOnce --storage-class=my-storage-class --hostpath= /mnt/my-disk (?!) // replaced by --overrides
 
