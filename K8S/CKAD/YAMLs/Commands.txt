@@ -1,3 +1,5 @@
+"storageClassName: ..." the same in pv and pvc causes "Bound" status for pvc
+
 kubectl run redis --image="redis:alpine" --labels="tier=db"
 kubectl expose pod redis --name redis-service --port=6379
 kubectl run custom-nginx --image=nginx --port=8080
