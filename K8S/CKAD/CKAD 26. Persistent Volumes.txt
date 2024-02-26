@@ -1,3 +1,5 @@
+"storageClassName: ..." the same in pv and pvc causes "Bound" status for pvc
+
 controlplane ~ ➜  kubectl exec webapp -- cat /log/app.log
 [2024-01-11 11:42:30,126] INFO in event-simulator: USER1 is viewing page1
 [2024-01-11 11:42:31,127] INFO in event-simulator: USER1 is viewing page1
