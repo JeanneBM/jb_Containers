@@ -1,3 +1,8 @@
+https://labs.play-with-k8s.com/
+
+https://killercoda.com/playgrounds/scenario/ckad
+
+
 kubectl set serviceaccount deploy/web-dashboard dashboard-sa
 
 kubectl get all --show-label
