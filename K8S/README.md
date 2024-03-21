@@ -3,7 +3,7 @@ https://labs.play-with-k8s.com/
 https://killercoda.com/playgrounds/scenario/ckad
 
 ##
-kubectl exec -it -n dev1401 nginx1401 -- sh
+kubectl exec -it -n dev1401 nginx1401 -- sh      //  out with "exit"
 
 kubectl set serviceaccount deploy/web-dashboard dashboard-sa
 
