@@ -68,8 +68,12 @@ spec:
     spec:
       affinity:
         nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            
+         requiredDuringSchedulingIgnoredDuringExecution:
+           nodeSelectorTerms:
+           - matchExpressions:
+             - key: app_type
+               values: ["beta"]
+               operator: In       
       containers:
       - image: nginx
         name: nginx
