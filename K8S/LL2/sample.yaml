@@ -1,0 +1,102 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{},"creationTimestamp":null,"labels":{"run":"nginx"},"name":"nginx1401","namespace":"dev1401"},"spec":{"containers":[{"image":"kodekloud/nginx","imagePullPolicy":"IfNotPresent","name":"nginx","ports":[{"containerPort":9080}],"readinessProbe":{"httpGet":{"path":"/","port":8080}},"resources":{}}],"dnsPolicy":"ClusterFirst","restartPolicy":"OnFailure"},"status":{}}
+  creationTimestamp: "2024-03-21T21:38:13Z"
+  labels:
+    run: nginx
+  name: nginx1401
+  namespace: dev1401
+  resourceVersion: "4316"
+  uid: f621f995-46e1-44d0-b08e-1a6eb452600e
+spec:
+  containers:
+  - image: kodekloud/nginx
+    imagePullPolicy: IfNotPresent
+    name: nginx
+    ports:
+    - containerPort: 9080
+      protocol: TCP
+    livenessProbe:
+      exec:
+        command:
+        - ls
+        - /var/www/html/file_check
+      initialDelaySeconds: 10
+      periodSeconds: 60
+    readinessProbe:
+      failureThreshold: 3
+      httpGet:
+        path: /
+        port: 9080
+        scheme: HTTP
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-nh6bh
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: node01
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: OnFailure
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: kube-api-access-nh6bh
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: dice
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      completions: 10
+      backoffLimit: 25
+      activeDeadlineSeconds: 20
+      template:
+        spec:
+          containers:
+          - name: dice
+            image: kodekloud/throw-dice
+          restartPolicy: Never
