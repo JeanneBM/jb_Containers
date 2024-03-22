@@ -11,6 +11,8 @@ kubectl exec -it -n dev1401 nginx1401 -- sh
 
 kubectl exec -it dev-pod-dind-878516 -c log-x -- sh
 -c wie container
+
+kubectl logs dev-pod-dind-878516 -c log-x > /opt/dind-878516_logs.txt
 ```
 
 kubectl set serviceaccount deploy/web-dashboard dashboard-sa
