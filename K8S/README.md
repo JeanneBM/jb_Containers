@@ -20,6 +20,9 @@ kubectl set serviceaccount deploy/web-dashboard dashboard-sa
 kubectl get all --show-label
 
 kubectl label node node01 color=blue
+
+kubectl expose deployment my-webapp --name front-end-service --type NodePort --port 80
+
 ##
 https://phoenixnap.com/kb/install-kubernetes-on-ubuntu
 
