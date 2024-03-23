@@ -14,9 +14,13 @@ kubectl exec -it dev-pod-dind-878516 -c log-x -- sh
 
 kubectl logs dev-pod-dind-878516 -c log-x > /opt/dind-878516_logs.txt
 ```
+```
 kubectl set image deployment/nginx-deploy nginx=nginx:1.17
 
 kubectl set serviceaccount deploy/web-dashboard dashboard-sa
+
+kubectl set env deployment/web-dashboard zmienna="1"
+```
 
 kubectl get all --show-label
 
@@ -25,6 +29,7 @@ kubectl label node node01 color=blue
 kubectl expose deployment my-webapp --name front-end-service --type NodePort --port 80
 
 kubectl run messaging --image redis:alpine --labels tier=msg --dry-run=client -o yaml
+
 ```
 curl 10.244.0.6
 curl: (7) Failed to connect to 10.244.0.6 port 80 after 0 ms: Connection refused
