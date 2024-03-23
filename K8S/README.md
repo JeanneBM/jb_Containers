@@ -14,6 +14,7 @@ kubectl exec -it dev-pod-dind-878516 -c log-x -- sh
 
 kubectl logs dev-pod-dind-878516 -c log-x > /opt/dind-878516_logs.txt
 ```
+kubectl set image deployment/nginx-deploy nginx=nginx:1.17
 
 kubectl set serviceaccount deploy/web-dashboard dashboard-sa
 
