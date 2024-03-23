@@ -71,7 +71,7 @@ spec:
          requiredDuringSchedulingIgnoredDuringExecution:
            nodeSelectorTerms:
            - matchExpressions:
-             - key: app_type
+             - key: app_type       //to controlplane through label
                values: ["beta"]
                operator: In       
       containers:
