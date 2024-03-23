@@ -1,0 +1,18 @@
+# Canary for 5%
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/canary: "true"
+    nginx.ingress.kubernetes.io/canary-weight: "5"
+  name: your-api-canary
+  namespace: test
+spec:
+  rules:
+  - host: api.example.com
+    http:
+      paths:
+      - backend:
+          serviceName: your-api-canary
+          servicePort: http
