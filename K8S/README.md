@@ -1,5 +1,7 @@
 [![Python 3.8](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-360/)
 
+apiVersion: extensions/v1beta1
+
 https://labs.play-with-k8s.com/
 
 https://killercoda.com/playgrounds/scenario/ckad
