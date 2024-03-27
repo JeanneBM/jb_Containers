@@ -1,3 +1,22 @@
+# Canary deployment is a technique used in software development and deployment to reduce the risk associated with introducing new versions of applications or services. It involves gradually rolling out a new version of an application or service to a small subset of users or servers before making it available to the entire user base or infrastructure.
+
+# The term "canary" comes from the practice of using canaries in coal mines to detect toxic gases; if the canary became sick or died, miners knew that conditions were unsafe. Similarly, in software deployment, a small subset of users or servers serves as the "canary" to detect any issues or bugs in the new version before it reaches the broader audience.
+
+# Key aspects of canary deployment include:
+
+# Incremental rollout: The new version of the application is deployed gradually to a subset of users or servers, rather than all at once.
+
+# Monitoring: Monitoring tools are used to track various metrics, such as error rates, latency, and performance, for both the canary and the existing version.
+
+# Automated rollback: If issues are detected with the canary deployment, automated rollback mechanisms can revert the changes to the previous version, minimizing the impact on users.
+
+# Gradual expansion: Assuming the canary deployment is successful, the new version is gradually expanded to a larger percentage of users or servers until it encompasses the entire user base or infrastructure.
+
+# Feedback loop: Feedback from users and monitoring tools is used to evaluate the success of the deployment and identify any necessary adjustments or improvements.
+
+# Canary deployment is particularly useful in environments where reliability and uptime are critical, as it allows for the early detection of issues and reduces the blast radius of potential failures. It is commonly used in conjunction with continuous integration/continuous deployment (CI/CD) pipelines and automated testing to streamline the deployment process and ensure high-quality releases.
+
+
 # Canary for 5%
 apiVersion: extensions/v1beta1
 kind: Ingress
