@@ -1,5 +1,7 @@
 [![Python 3.8](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-360/)
 
+trivy k8s --report summary cluster
+
 apiVersion: extensions/v1beta1 # https://kubernetes.io/blog/2019/07/18/api-deprecations-in-1-16/
 
 https://labs.play-with-k8s.com/
