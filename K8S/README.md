@@ -1,6 +1,8 @@
 [![Python 3.8](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-360/)
-
+```
 trivy k8s --report summary cluster
+trivy image bitnami/nginx | grep -i critical
+```
 
 apiVersion: extensions/v1beta1 # https://kubernetes.io/blog/2019/07/18/api-deprecations-in-1-16/
 
