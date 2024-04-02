@@ -1,10 +1,5 @@
 First introduction to Docker : The future of Linux Containers https://www.youtube.com/watch?v=wW9CAH9nSLs 
 
-
-https://www.youtube.com/watch?v=tj3xYFA6Q2o next generation plugin
-
-https://frontstack.pl/docker-komendy/
-
 Budowa Linuxa a Docker
 
 Docker wykorzystuje do tworzenia kontenerów dwie cechy Linuksa: 
