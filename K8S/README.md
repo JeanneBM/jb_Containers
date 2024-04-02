@@ -27,6 +27,17 @@ kubectl set serviceaccount deploy/web-dashboard dashboard-sa
 
 kubectl set env deployment/web-dashboard zmienna="1"
 ```
+```
+##
+Wrong command: kubectl set image pods/redis redis
+
+Error: error: there is no need to specify a resource type as a separate argument when passing arguments in resource/name
+form (e.g. 'kubectl get resource/<resource_name>' instead of 'kubectl get resource resource/<resource_name>'
+
+Correct command: kubectl set image pod/redis redis=redis
+##
+
+```
 
 kubectl get all --show-label
 
@@ -46,7 +57,3 @@ https://phoenixnap.com/kb/install-kubernetes-on-ubuntu
 
 https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
 
-```
-error: there is no need to specify a resource type as a separate argument when passing arguments in resource/name
-form (e.g. 'kubectl get resource/<resource_name>' instead of 'kubectl get resource resource/<resource_name>'
-```
