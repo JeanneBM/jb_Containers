@@ -45,3 +45,8 @@ curl: (7) Failed to connect to 10.244.0.6 port 80 after 0 ms: Connection refused
 https://phoenixnap.com/kb/install-kubernetes-on-ubuntu
 
 https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
+
+```
+error: there is no need to specify a resource type as a separate argument when passing arguments in resource/name
+form (e.g. 'kubectl get resource/<resource_name>' instead of 'kubectl get resource resource/<resource_name>'
+```
