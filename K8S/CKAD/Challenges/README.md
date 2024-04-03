@@ -13,3 +13,4 @@ kubectl get pods -A
 kubectl edit pod -n kube-system coredns-5787c6fbfc-pv8xm
 kubectl set image deployment/coredns -n kube-system coredns=registry.k8s.io/coredns/coredns:v1.8.6
 kubectl uncordon node01
+scp /media/* node01:/web
