@@ -1,4 +1,4 @@
-Challenge-2 env troubleshooting:
+Challenge-2 Env-troubleshooting:
 
 ```
 systemctl status kubelet.service
