@@ -9,6 +9,7 @@ spec:
   resources:
     requests:
       storage: 1Gi
+  storageClassName: local-storage
 
 ---
 apiVersion: v1
@@ -35,7 +36,9 @@ spec:
       mountPath: /site
     resources: {}
   volumes:
-  - name: site  
+  - name: site
+    persistentVolumeClaim:
+      claimName: jekyll-site
   dnsPolicy: ClusterFirst
   restartPolicy: Always
 status: {}
@@ -71,7 +74,6 @@ spec:
   type: NodePort
 status:
   loadBalancer: {}
-
+  
 ---
-
 
