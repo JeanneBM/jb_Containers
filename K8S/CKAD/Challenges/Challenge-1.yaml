@@ -1,1 +1,77 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jekyll-site
+  namespace: development
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: jekyll
+  name: jekyll
+  namespace: development
+spec:
+  containers:
+  - image: kodekloud/jekyll-serve
+    name: jekyll
+    volumeMounts:
+      - name: site
+        mountPath: /site
+  initContainers:
+  - name: copy-jekyll-site
+    image: kodekloud/jekyll
+    command: ['sh', '-c', 'jekyll new /site']
+    volumeMounts: 
+    - name: site
+      mountPath: /site
+    resources: {}
+  volumes:
+  - name: site  
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2024-04-04T19:22:56Z"
+  labels:
+    run: jekyll
+  name: jekyll
+  namespace: development
+  resourceVersion: "6449"
+  uid: 07a195f9-27f8-43a8-80e1-5fac2e3c59d6
+spec:
+  clusterIP: 10.111.15.171
+  clusterIPs:
+  - 10.111.15.171
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - nodePort: 30097
+    port: 8080
+    protocol: TCP
+    targetPort: 4000
+  selector:
+    run: jekyll
+  sessionAffinity: None
+  type: NodePort
+status:
+  loadBalancer: {}
+
+---
+
 
