@@ -1,3 +1,9 @@
+Challenge-1 Env-troubleshooting:
+```
+kubectl -n development expose pod jekyll --type NodePort --port 8080 --target-port 4000 
+kubectl config set-context developer --username martin --cluster kubernetes
+```
+
 Challenge-2 Env-troubleshooting:
 
 ```
@@ -14,3 +20,4 @@ kubectl edit pod -n kube-system coredns-5787c6fbfc-pv8xm
 kubectl set image deployment/coredns -n kube-system coredns=registry.k8s.io/coredns/coredns:v1.8.6
 kubectl uncordon node01
 scp /media/* node01:/web
+```
