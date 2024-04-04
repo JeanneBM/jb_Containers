@@ -3,6 +3,7 @@ Challenge-1 Env-troubleshooting:
 kubectl -n development expose pod jekyll --type NodePort --port 8080 --target-port 4000 
 kubectl config set-context developer --username martin --cluster kubernetes
 kubectl create rolebinding developer-rolebinding -n development --role developer-role -n development --user martin
+kubectl config set-context developer --user martin --cluster kubernetes
 
 ```
 
