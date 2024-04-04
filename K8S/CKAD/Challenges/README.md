@@ -5,7 +5,6 @@ kubectl config set-context developer --username martin --cluster kubernetes
 kubectl create rolebinding developer-rolebinding -n development --role developer-role -n development --user martin
 kubectl config set-context developer --user martin --cluster kubernetes
 kubectl create role developer-role --verb=get,list,watch --resource svc,pvc,pods
-
 ```
 
 Challenge-2 Env-troubleshooting:
