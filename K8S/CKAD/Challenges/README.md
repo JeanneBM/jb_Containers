@@ -24,3 +24,17 @@ kubectl set image deployment/coredns -n kube-system coredns=registry.k8s.io/core
 kubectl uncordon node01
 scp /media/* node01:/web
 ```
+
+Challenge-3 Env-troubleshooting:
+
+```
+kubectl create ns vote
+kubectl create deploy vote-deployment --image kodekloud/examplevotingapp_vote:before -n vote
+kubectl -n vote expose deployment vote-deployment --name vote-service --port 5000 --target-port 80 --type NodePort
+
+```
+
+Challenge-4 Env-troubleshooting:
+
+```
+```
