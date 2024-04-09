@@ -1,4 +1,4 @@
-Challenge-1 Env-troubleshooting:
+Challenge-1 Env-Commands:
 ```
 kubectl -n development expose pod jekyll --type NodePort --port 8080 --target-port 4000 
 kubectl config set-context developer --username martin --cluster kubernetes
@@ -7,7 +7,7 @@ kubectl config set-context developer --user martin --cluster kubernetes
 kubectl create role developer-role --verb=get,list,watch --resource svc,pvc,pods
 ```
 
-Challenge-2 Env-troubleshooting:
+Challenge-2 Env-Troubleshooting:
 
 ```
 systemctl status kubelet.service
@@ -25,7 +25,7 @@ kubectl uncordon node01
 scp /media/* node01:/web
 ```
 
-Challenge-3 Env-troubleshooting:
+Challenge-3 Env-Commands:
 
 ```
 kubectl create ns vote
@@ -35,7 +35,7 @@ kubectl -n vote expose deployment vote-deployment --name vote-service --port 500
 kubectl expose -n vote deployment redis-deployment --name redis --port 6379 --target-port 6379
 ```
 
-Challenge-4 Env-troubleshooting:
+Challenge-4 Env-Commands:
 
 ```
 ```
