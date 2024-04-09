@@ -3,6 +3,9 @@ MiniKube
 ```
 MiniShift
 ```
+wget https://github.com/minishift/minishift/releases/download/v1.34.1/minishift-1.34.1-linux-amd64.tgz; tar xf minishift-1.34.1-linux-amd64.tgz; export MINISHIFT_HOME=/mnt/images/minishift; minishift config set disk-size 32G; minishift config set memory 4096; minishift config set openshift-version v3.11.0; minishift start; oc login -u system:admin
+
+minishift config view
 ```
 Docker on Ubuntu
 ```
