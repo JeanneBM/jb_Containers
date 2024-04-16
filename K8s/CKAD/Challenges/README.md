@@ -6,6 +6,9 @@ kubectl create rolebinding developer-rolebinding -n development --role developer
 kubectl config set-context developer --user martin --cluster kubernetes
 kubectl create role developer-role --verb=get,list,watch --resource svc,pvc,pods
 ```
+```
+kubectl -n development expose pod jekyll --type NodePort --port 8080 --target-port 4000; kubectl config set-context developer --username martin --cluster kubernetes; kubectl create rolebinding developer-rolebinding -n development --role developer-role -n development --user martin; kubectl config set-context developer --user martin --cluster kubernetes; kubectl create role developer-role --verb=get,list,watch --resource svc,pvc,pods
+```
 
 Challenge-2 Env-Troubleshooting:
 
@@ -33,7 +36,8 @@ kubectl create deploy vote-deployment --image kodekloud/examplevotingapp_vote:be
 kubectl -n vote expose deployment vote-deployment --name vote-service --port 5000 --target-port 80 --type NodePort
 //nodeport to change via edit
 kubectl expose -n vote deployment redis-deployment --name redis --port 6379 --target-port 6379
-
+```
+```
 kubectl create ns vote; kubectl create deploy vote-deployment --image kodekloud/examplevotingapp_vote:before -n vote; kubectl -n vote expose deployment vote-deployment --name vote-service --port 5000 --target-port 80 --type NodePort; kubectl expose -n vote deployment redis-deployment --name redis --port 6379 --target-port 6379
 ```
 
