@@ -33,6 +33,8 @@ kubectl create deploy vote-deployment --image kodekloud/examplevotingapp_vote:be
 kubectl -n vote expose deployment vote-deployment --name vote-service --port 5000 --target-port 80 --type NodePort
 //nodeport to change via edit
 kubectl expose -n vote deployment redis-deployment --name redis --port 6379 --target-port 6379
+
+kubectl create ns vote; kubectl create deploy vote-deployment --image kodekloud/examplevotingapp_vote:before -n vote; kubectl -n vote expose deployment vote-deployment --name vote-service --port 5000 --target-port 80 --type NodePort; kubectl expose -n vote deployment redis-deployment --name redis --port 6379 --target-port 6379
 ```
 
 Challenge-4 Env-Commands:
