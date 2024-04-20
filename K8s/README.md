@@ -1,4 +1,5 @@
 [![Python 3.8](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-360/)
+
 ```
 trivy k8s --report summary cluster
 trivy image bitnami/nginx | grep -i critical
@@ -56,4 +57,8 @@ curl: (7) Failed to connect to 10.244.0.6 port 80 after 0 ms: Connection refused
 https://phoenixnap.com/kb/install-kubernetes-on-ubuntu
 
 https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
+
+```
+sudo apt update; //docker instalation // ; sudo swapoff -a; sudo firewall-cmd --permanent --add-port=6443/tcp; sudo firewall-cmd --permanent --add-port=2379-2380/tcp; sudo firewall-cmd --permanent --add-port=10250/tcp; sudo firewall-cmd --permanent --add-port=10251/tcp; sudo firewall-cmd --permanent --add-port=10252/tcp; sudo firewall-cmd --permanent --add-port=10255/tcp; sudo firewall-cmd –-reload; modprobe br_netfilter; sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+
 
