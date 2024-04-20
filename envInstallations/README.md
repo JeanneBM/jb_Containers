@@ -1,5 +1,12 @@
 Vagrant
 ```
+sudo apt install virtualbox -y; sudo apt install vagrant; wget https://releases.hashicorp.com/vagrant/2.3.7/vagrant_2.3.7-1_amd64.deb; sudo dpkg -i vagrant_2.3.7-1_amd64.deb; mkdir ~/project_name; mkdir ~/vagrant-ubuntu; cd ~/vagrant-ubuntu; vagrant init ubuntu/trusty64; vagrant up; vagrant ssh
+
+vagrant halt
+vagrant destroy
+sudo apt remove vagrant
+sudo apt autoremove vagrant
+sudo apt autoremove --purge vagrant
 ```
 
 MiniKube
@@ -7,6 +14,8 @@ MiniKube
 sudo apt update; sudo apt upgrade -y; sudo reboot; sudo apt install ca-certificates curl gnupg wget apt-transport-https -y; sudo install -m 0755 -d /etc/apt/keyrings; curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg; sudo chmod a+r /etc/apt/keyrings/docker.gpg; echo "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu"$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null; sudo apt update
 ```
 ```
+sudo apt update; //docker instalation // ; sudo swapoff -a; sudo firewall-cmd --permanent --add-port=6443/tcp; sudo firewall-cmd --permanent --add-port=2379-2380/tcp; sudo firewall-cmd --permanent --add-port=10250/tcp; sudo firewall-cmd --permanent --add-port=10251/tcp; sudo firewall-cmd --permanent --add-port=10252/tcp; sudo firewall-cmd --permanent --add-port=10255/tcp; sudo firewall-cmd –-reload; modprobe br_netfilter; sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+
 ```
 MiniShift
 ```
