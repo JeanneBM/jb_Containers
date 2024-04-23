@@ -51,4 +51,5 @@ kubectl create ns vote; kubectl create deploy vote-deployment --image kodekloud/
 Challenge-4 Env-Commands:
 
 ```
+kubectl apply -f sample.yaml; kubectl exec -it redis-cluster-0 -- redis-cli --cluster create --cluster-replicas 1 $(kubectl get pods -l app=redis-cluster -o jsonpath='{range.items[*]}{.status.podIP}:6379 {end}')
 ```
