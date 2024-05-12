@@ -26,6 +26,7 @@ kubectl edit pod -n kube-system coredns-5787c6fbfc-pv8xm
 kubectl set image deployment/coredns -n kube-system coredns=registry.k8s.io/coredns/coredns:v1.8.6
 kubectl uncordon node01
 scp /media/* node01:/web
+kubectl expose pod gop-file-server --name gop-fs-service --port 8080 --target-port 8080 --type NodePort
 ```
 
 ```
@@ -33,7 +34,7 @@ vim /root/.kube/config
     server: https://controlplane:644
 vim /etc/kubernetes/manifests/kube-apiserver.yaml  // "ca.crt"
 systemctl restart kubelet.service
-kubectl set image deployment/coredns -n kube-system coredns=registry.k8s.io/coredns/coredns:v1.8.6; kubectl uncordon node01; scp /media/* node01:/web
+kubectl set image deployment/coredns -n kube-system coredns=registry.k8s.io/coredns/coredns:v1.8.6; kubectl uncordon node01; scp /media/* node01:/web; kubectl expose pod gop-file-server --name gop-fs-service --port 8080 --target-port 8080 --type NodePort
 ```
 
 Challenge-3 Env-Commands:
