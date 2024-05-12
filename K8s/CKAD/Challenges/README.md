@@ -1,3 +1,6 @@
+![Zrzut ekranu z 2024-05-12 23-40-06](https://github.com/JeanneBM/jb_Containers/assets/55690923/60d261cb-54fb-495a-86aa-22c43328e4ca)
+
+
 Challenge-1 Env-Commands:
 ```
 kubectl -n development expose pod jekyll --type NodePort --port 8080 --target-port 4000 
