@@ -28,6 +28,14 @@ kubectl uncordon node01
 scp /media/* node01:/web
 ```
 
+```
+vim /root/.kube/config
+    server: https://controlplane:644
+vim /etc/kubernetes/manifests/kube-apiserver.yaml  // "ca.crt"
+systemctl restart kubelet.service
+kubectl set image deployment/coredns -n kube-system coredns=registry.k8s.io/coredns/coredns:v1.8.6; kubectl uncordon node01; scp /media/* node01:/web
+```
+
 Challenge-3 Env-Commands:
 
 ```
