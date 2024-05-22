@@ -31,3 +31,8 @@ Terraform on Ubuntu
 ```
 sudo apt-get install unzip -y; wget https://releases.hashicorp.com/terraform/1.8.0/terraform_1.8.0_linux_amd64.zip; unzip terraform_1.8.0_linux_amd64.zip; sudo mv terraform /usr/local/bin/; terraform --version
 ```
+Jenkins on Ubuntu
+```
+wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key |sudo gpg --dearmor -o /usr/share/keyrings/jenkins.gpg; sudo sh -c 'echo deb [signed-by=/usr/share/keyrings/jenkins.gpg] http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'; sudo apt update; sudo apt install jenkins; sudo systemctl start jenkins.service; sudo ufw allow 8080
+```
+##### sudo cat /var/lib/jenkins/secrets/initialAdminPassword
