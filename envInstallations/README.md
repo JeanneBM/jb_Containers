@@ -40,3 +40,4 @@ sudo wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debi
 
 ##### sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 ##### https://pkg.jenkins.io/debian-stable/
+##### https://university.cloudbees.com/path/jenkins-community-training-certification/jenkins-administration-community-version/1695774 
