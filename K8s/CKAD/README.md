@@ -17,3 +17,4 @@ alias now="--force --grace-period 0"
 alias kx='kubectl config use-context'
 alias kn='kubectl config set-context --current --namespace'
 ```
+* https://killercoda.com/killer-shell-ckad?ref=hackernoon.com
