@@ -13,5 +13,3 @@ czyli przestrzenie nazw. W dużym skrócie, przestrzenie nazw odseparowują, tj.
 Procesom w zadanej przestrzeni nazw „wydaje się”, że są one jedynymi procesami w systemie. Przestrzenie nazw posiadają między innymi 
 swoje wirtualne sieci, co jest niezbędne w przypadku kontenerów.
 ```
-
-https://killercoda.com/killer-shell-ckad?ref=hackernoon.com
