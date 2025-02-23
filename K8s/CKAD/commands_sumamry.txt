@@ -1,0 +1,58 @@
+* kubectl apply -f *.yaml ;
+* kubectl create -f *.yaml;
+* kubectl replace -f *.yaml --force
+
+* kubectl get pod
+* kubectl get pv, pvc
+* kubectl get pods --all-namespaces
+* kubectl get svc -n=marketing
+
+* kubectl describe pod newpods-j7vsf
+* kubectl edit rs new-replica-set
+
+* kubectl run nginx --image=nginx
+* kubectl run redis --image=redis123 --dry-run=client -o yaml > redis.yaml
+* kubectl run custom-nginx --image=nginx --port=8080
+* kubectl run httpd --image=httpd:alpine --port=80 --expose=true
+* kubectl run webapp-green --image=kodekloud/webapp-color -- --color=green
+* kubectl run redis --image=redis:alpine --labels="tier=db"
+
+* kubectl create deployment webapp --namespace=dev-ns --image=kodekloud/webapp-color --replicas=3
+* kubectl create configmap webapp-config-map --from-literal=APP_COLOR=darkblue --from-literal=APP_OTHER=disregard
+* kubectl create sa dashboard-sa
+* kubectl create secret generic db-secret --from-literal=DB_Host=sql01 --from-literal=DB_User=root --from-literal=DB_Password=password123
+
+* kubectl create token dashboard-sa
+
+* kubectl expose pod redis --port 6379 --name redis-service
+* kubectl expose pod redis --port=6379 --name redis-service --dry-run=client -o yaml
+
+* kubectl scale deployment --replicas=1 frontend-v2
+* kubectl scale deployment frontend --replicas=0; kubectl scale deployment frontend-v2 --replicas=5
+
+* kubectl exec ubuntu-sleeper -- whoami
+
+* kubectl delete pod new-replica-set-89c85 new-replica-set-jmks6 new-replica-set-tlhk2 new-replica-set-46ll7
+
+* kubectl taint nodes node01 spray=mortein:NoSchedule
+* kubectl proxy 8001& //uruchamia serwer proxy Kubernetes na porcie 8001 w &tle
+* kubectl explain replicaset
+
+
+
+
+
+
+
+
+curl localhost:8001/apis/authorization.k8s.io
+cp -v /etc/kubernetes/manifests/kube-apiserver.yaml /root/kube-apiserver.yaml.backup
+vim /etc/kubernetes/manifests/kube-apiserver.yaml
+curl -LO https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl-convert
+chmod +x kubectl-convert
+mv kubectl-convert /usr/local/bin/kubectl-convert
+kubectl-convert -f ingress-old.yaml --output-version networking.k8s.io/v1 | kubectl apply -f -
+
+
+
+uname -a
