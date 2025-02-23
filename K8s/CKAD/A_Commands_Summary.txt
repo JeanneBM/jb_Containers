@@ -86,13 +86,7 @@ zamiast flag:
 * kubectl proxy 8001& //uruchamia serwer proxy Kubernetes na porcie 8001 w &tle
 * kubectl explain replicaset
 
-
-
-
-
-
-
-
+And others:
 curl localhost:8001/apis/authorization.k8s.io
 cp -v /etc/kubernetes/manifests/kube-apiserver.yaml /root/kube-apiserver.yaml.backup
 vim /etc/kubernetes/manifests/kube-apiserver.yaml
@@ -100,7 +94,4 @@ curl -LO https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable
 chmod +x kubectl-convert
 mv kubectl-convert /usr/local/bin/kubectl-convert
 kubectl-convert -f ingress-old.yaml --output-version networking.k8s.io/v1 | kubectl apply -f -
-
-
-
 uname -a
