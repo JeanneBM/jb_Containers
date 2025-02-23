@@ -17,6 +17,9 @@
 * kubectl run webapp-green --image=kodekloud/webapp-color -- --color=green
 * kubectl run redis --image=redis:alpine --labels="tier=db"
 
+* -- /bin/sh -c 'echo Hello, Kubernetes!'
+* -- sh -c "sleep 2 && echo done"
+
 * kubectl run nginx --image=nginx --port=80 --env="ENV_VAR1=value1" --env="ENV_VAR2=value2" --labels="app=nginx,env=production,team=frontend" --annotations="description=NGINX Pod,maintainer=devops@example.com" --overrides='{ "apiVersion": "v1", "spec": { "containers": [ { "name": "nginx", "image": "nginx", "resources": { "limits": { "cpu": "500m", "memory": "1Gi" }, "requests": { "cpu": "250m", "memory": "512Mi" } }, "env": [ { "name": "ENV_VAR1", "value": "value1" }, { "name": "ENV_VAR2", "value": "value2" } ] } ] } }' --dry-run=client
 
 --port=80
@@ -42,7 +45,7 @@ flagi, które wyszły z użycia - Deploy:
 --requests="cpu=250m,memory=512Mi"
 --labels="app=webapp,env=development"
 --annotations="description=Web App Deployment,maintainer=devops@example.com"
---dry-run=client
+
 zamiast flag:
 * kubectl set resources deployment webapp --limits=cpu=500m,memory=1Gi --requests=cpu=250m,memory=512Mi
 * kubectl set env deployment webapp --env="ENV_VAR1=value1" --env="ENV_VAR2=value2" 
@@ -86,6 +89,10 @@ zamiast flag:
 * kubectl proxy 8001& //uruchamia serwer proxy Kubernetes na porcie 8001 w &tle
 * kubectl explain replicaset
 
+
+Helm 
+Podman 
+
 And others:
 ==================
 curl localhost:8001/apis/authorization.k8s.io
@@ -96,3 +103,6 @@ chmod +x kubectl-convert
 mv kubectl-convert /usr/local/bin/kubectl-convert
 kubectl-convert -f ingress-old.yaml --output-version networking.k8s.io/v1 | kubectl apply -f -
 uname -a
+
+=============================
+
