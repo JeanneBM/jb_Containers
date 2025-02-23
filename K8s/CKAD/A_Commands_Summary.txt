@@ -47,6 +47,19 @@
 * kubectl create sa dashboard-sa
 * kubectl create secret generic db-secret --from-literal=DB_Host=sql01 --from-literal=DB_User=root --from-literal=DB_Password=password123
 
+* kubectl create cronjob complex-cronjob --image=busybox --schedule="*/5 * * * *" --dry-run=client -o yaml | kubectl set env --local -f - --keys=FOO,BAR --dry-run=client -o yaml | kubectl label --local -f - 'environment=prod' --dry-run=client -o yaml | kubectl apply -f -
+--schedule="*/5 * * * *"  //every 5 min
+--schedule="*/15 * * * *" //every 15 min
+--schedule="0 * * * *" //every hour
+--schedule="0 0 1 * *" //every month
+--schedule="0 0 15 * *" // 15th every month
+--schedule="15 12 * * *" //every day at 12:15
+
+--schedule="0 */2 * * *" // every 2h
+--schedule="0 0 1 */2 *" // 1st day every 2 month
+--schedule="15 14 18 */2 *" // 18th day of every 2nd month at 14:15
+
+
 * kubectl create token dashboard-sa
 
 * kubectl expose pod redis --port 6379 --name redis-service
