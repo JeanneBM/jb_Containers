@@ -87,6 +87,7 @@ zamiast flag:
 * kubectl explain replicaset
 
 And others:
+==================
 curl localhost:8001/apis/authorization.k8s.io
 cp -v /etc/kubernetes/manifests/kube-apiserver.yaml /root/kube-apiserver.yaml.backup
 vim /etc/kubernetes/manifests/kube-apiserver.yaml
