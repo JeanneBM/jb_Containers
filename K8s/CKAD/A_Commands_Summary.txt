@@ -92,6 +92,8 @@ zamiast flag:
 
 Helm 
 Podman 
+Dockerfile
+Docker
 
 And others:
 ==================
