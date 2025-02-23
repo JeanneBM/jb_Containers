@@ -24,16 +24,13 @@
 --labels="app=nginx,env=production,team=frontend"
 --annotations="description=NGINX Pod,maintainer=devops@example.com"
 --overrides='...'
---dry-run=client
 
 flagi, które wyszły z użycia - Pod:
 --limits="cpu=500m,memory=1Gi"
 --requests="cpu=250m,memory=512Mi"
-
-* kubectl create deployment webapp --namespace=dev-ns --image=kodekloud/webapp-color --replicas=3
+* kubectl set resources pod nginx --limits=cpu=500m,memory=1Gi --requests=cpu=250m,memory=512Mi
 
 * kubectl create deployment webapp --namespace=dev-ns --image=kodekloud/webapp-color --replicas=5 --port=8080 
-
 --namespace=dev-ns
 --image=kodekloud/webapp-color
 --replicas=5
