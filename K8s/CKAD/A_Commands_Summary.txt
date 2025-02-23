@@ -17,25 +17,29 @@
 * kubectl run webapp-green --image=kodekloud/webapp-color -- --color=green
 * kubectl run redis --image=redis:alpine --labels="tier=db"
 
-* kubectl run nginx --image=nginx --port=80 --env="ENV_VAR1=value1" --env="ENV_VAR2=value2" --limits="cpu=500m,memory=1Gi" --requests="cpu=250m,memory=512Mi" --labels="app=nginx,env=production,team=frontend" --annotations="description=NGINX Pod,maintainer=devops@example.com" --overrides='{ "apiVersion": "v1", "spec": { "containers": [ { "name": "nginx", "image": "nginx", "resources": { "limits": { "cpu": "500m", "memory": "1Gi" }, "requests": { "cpu": "250m", "memory": "512Mi" } }, "env": [ { "name": "ENV_VAR1", "value": "value1" }, { "name": "ENV_VAR2", "value": "value2" } ] } ] } }' --dry-run=client
+* kubectl run nginx --image=nginx --port=80 --env="ENV_VAR1=value1" --env="ENV_VAR2=value2" --labels="app=nginx,env=production,team=frontend" --annotations="description=NGINX Pod,maintainer=devops@example.com" --overrides='{ "apiVersion": "v1", "spec": { "containers": [ { "name": "nginx", "image": "nginx", "resources": { "limits": { "cpu": "500m", "memory": "1Gi" }, "requests": { "cpu": "250m", "memory": "512Mi" } }, "env": [ { "name": "ENV_VAR1", "value": "value1" }, { "name": "ENV_VAR2", "value": "value2" } ] } ] } }' --dry-run=client
 
 --port=80
 --env="ENV_VAR1=value1" i --env="ENV_VAR2=value2"
---limits="cpu=500m,memory=1Gi": Określa limity zasobów - CPU
---requests="cpu=250m,memory=512Mi": Określa żądania zasobów - CPU
 --labels="app=nginx,env=production,team=frontend"
 --annotations="description=NGINX Pod,maintainer=devops@example.com"
 --overrides='...'
 --dry-run=client
 
+flagi, które wyszły z użycia - Pod:
+--limits="cpu=500m,memory=1Gi"
+--requests="cpu=250m,memory=512Mi"
+
 * kubectl create deployment webapp --namespace=dev-ns --image=kodekloud/webapp-color --replicas=3
 
-* kubectl create deployment webapp --namespace=dev-ns --image=kodekloud/webapp-color --replicas=5 --port=8080 --env="ENV_VAR1=value1" --env="ENV_VAR2=value2" --limits="cpu=500m,memory=1Gi" --requests="cpu=250m,memory=512Mi" --labels="app=webapp,env=development" --annotations="description=Web App Deployment,maintainer=devops@example.com" --dry-run=client
+* kubectl create deployment webapp --namespace=dev-ns --image=kodekloud/webapp-color --replicas=5 --port=8080 
 
 --namespace=dev-ns
 --image=kodekloud/webapp-color
 --replicas=5
 --port=8080
+
+flagi, które wyszły z użycia - Deploy:
 --env="ENV_VAR1=value1" i --env="ENV_VAR2=value2"
 --limits="cpu=500m,memory=1Gi"
 --requests="cpu=250m,memory=512Mi"
