@@ -1,5 +1,3 @@
-tylko volumes sa na
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
