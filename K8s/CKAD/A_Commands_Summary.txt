@@ -55,7 +55,9 @@ zamiast flag:
 
 * kubectl create configmap webapp-config-map --from-literal=APP_COLOR=darkblue --from-literal=APP_OTHER=disregard
 * kubectl create sa dashboard-sa
+
 * kubectl create secret generic db-secret --from-literal=DB_Host=sql01 --from-literal=DB_User=root --from-literal=DB_Password=password123
+* kubectl create secret generic my-secret --from-file=./my-file.txt
 
 * kubectl create cronjob complex-cronjob --image=busybox --schedule="*/5 * * * *"  
 * kubectl set env --local -f - --keys=key1,key2  | 
