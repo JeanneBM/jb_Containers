@@ -25,6 +25,62 @@ imagePullSecrets: Określanie sekretów używanych do pobierania obrazów konten
 restartPolicy: Ustalanie polityki restartu poda (np. Always, OnFailure, Never).
 
 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: przykladowa-aplikacja
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: przykladowa-aplikacja
+  template:
+    metadata:
+      labels:
+        app: przykladowa-aplikacja
+    spec:
+      containers:
+      - name: aplikacja
+        image: przykladowa-aplikacja:1.0
+        ports:
+        - containerPort: 8080
+      volumes:
+      - name: config-volume
+        configMap:
+          name: config-map
+      initContainers:
+      - name: init-myservice
+        image: busybox
+        command: ['sh', '-c', 'echo Init Container']
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: disktype
+                operator: In
+                values:
+                - ssd
+      nodeSelector:
+        disktype: ssd
+      serviceAccountName: my-service-account
+      tolerations:
+      - key: "key1"
+        operator: "Equal"
+        value: "value1"
+        effect: "NoSchedule"
+      dnsPolicy: Default
+      securityContext:
+        runAsUser: 1000
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        - "myapp.local"
+      imagePullSecrets:
+      - name: myregistrykey
+      restartPolicy: Always
+
+
 spec:containwers:name level
 ============================
 image: Definiuje obraz kontenera.
@@ -54,6 +110,62 @@ lifecycle: Definiuje cykl życia haka dla kontenera.
 securityContext: Definiuje kontekst bezpieczeństwa dla kontenera.
 
 imagePullPolicy: Polityka pobierania obrazu (np. Always, IfNotPresent, Never).
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: przykladowy-pod
+spec:
+  containers:
+  - name: przykladowy-kontener
+    image: nginx:latest
+    ports:
+    - containerPort: 80
+    env:
+    - name: ENV_VAR
+      value: "example"
+    volumeMounts:
+    - name: config-volume
+      mountPath: /etc/config
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "250m"
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: 8080
+      initialDelaySeconds: 10
+      periodSeconds: 10
+    readinessProbe:
+      httpGet:
+        path: /ready
+        port: 8080
+      initialDelaySeconds: 5
+      periodSeconds: 10
+    startupProbe:
+      httpGet:
+        path: /start
+        port: 8080
+      initialDelaySeconds: 15
+      periodSeconds: 10
+    command: ["sh", "-c"]
+    args: ["echo Hello Kubernetes! && sleep 3600"]
+    workingDir: /usr/share/nginx/html
+    lifecycle:
+      postStart:
+        exec:
+          command: ["/bin/sh", "-c", "echo Post Start Hook"]
+      preStop:
+        exec:
+          command: ["/bin/sh", "-c", "echo Pre Stop Hook"]
+    securityContext:
+      runAsUser: 1000
+    imagePullPolicy: IfNotPresent
+
 
 ======================================================================================================================================
 
@@ -202,59 +314,3 @@ spec:
       - name: myregistrykey
       restartPolicy: Always
 
-Deployment
-
-spec:containers level
-============================
-volumes: Definiowanie woluminów używanych przez kontenery.
-
-initContainers: Definiowanie kontenerów inicjujących, które są uruchamiane przed głównymi kontenerami.
-
-affinity: Konfiguracja reguł preferencji dla przypisania poda do węzłów.
-
-nodeSelector: Określanie węzłów, na których pody mogą być uruchomione.
-
-serviceAccountName: Określanie konta serwisowego dla poda.
-
-tolerations: Konfiguracja tolerancji na reguły taint w węzłach.
-
-dnsPolicy: Ustawianie polityki DNS dla poda.
-
-securityContext: Konfiguracja kontekstu bezpieczeństwa na poziomie poda.
-
-hostAliases: Definiowanie aliasów hosta w pliku /etc/hosts w kontenerach.
-
-imagePullSecrets: Określanie sekretów używanych do pobierania obrazów kontenerów.
-
-restartPolicy: Ustalanie polityki restartu poda (np. Always, OnFailure, Never).
-
-
-spec:containwers:name level
-============================
-image: Definiuje obraz kontenera.
-
-ports: Definiuje porty, które kontener otwiera.
-
-env: Lista zmiennych środowiskowych dla kontenera.
-
-volumeMounts: Definiuje woluminy montowane w kontenerze.
-
-resources: Definiuje limity i żądania zasobów dla kontenera.
-
-livenessProbe: Definiuje sondę liveness.
-
-readinessProbe: Definiuje sondę readiness.
-
-startupProbe: Definiuje sondę startup.
-
-command: Definiuje polecenia uruchamiane w kontenerze.
-
-args: Argumenty przekazywane do poleceń uruchamianych w kontenerze.
-
-workingDir: Definiuje katalog roboczy dla polecenia kontenera.
-
-lifecycle: Definiuje cykl życia haka dla kontenera.
-
-securityContext: Definiuje kontekst bezpieczeństwa dla kontenera.
-
-imagePullPolicy: Polityka pobierania obrazu (np. Always, IfNotPresent, Never).
