@@ -169,24 +169,6 @@ spec:
 
 ======================================================================================================================================
 
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: project-earthflower
-  namespace: earth
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: project-earthflower
-  template:
-    metadata:
-      labels:
-        app: project-earthflower
-    spec:
-      containers:
-      - name: httpd
-        image: httpd:2.4.41-alpine
 
 -------------------------------------------------------------------------
         volumeMounts:
@@ -197,27 +179,6 @@ spec:
         persistentVolumeClaim:
           claimName: earth-project-earthflower-pvc
 -------------------------------------------------------------------------
-
-
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: przykladowa-aplikacja
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: przykladowa-aplikacja
-  template:
-    metadata:
-      labels:
-        app: przykladowa-aplikacja
-    spec:
-      containers:
-      - name: aplikacja
-        image: przykladowa-aplikacja:1.0
-        ports:
-        - containerPort: 8080
         
 -------------------------------------------------------------------------
 
@@ -249,7 +210,6 @@ spec:
           failureThreshold: 30
           successThreshold: 1
 -------------------------------------------------------------------------
-
        securityContext:
           runAsUser: 1000
           runAsGroup: 3000
@@ -259,58 +219,4 @@ spec:
           readOnlyRootFilesystem: true
 -------------------------------------------------------------------------
 
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: przykladowa-aplikacja
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: przykladowa-aplikacja
-  template:
-    metadata:
-      labels:
-        app: przykladowa-aplikacja
-    spec:
-      containers:
-      - name: aplikacja
-        image: przykladowa-aplikacja:1.0
-        ports:
-        - containerPort: 8080
-      volumes:
-      - name: config-volume
-        configMap:
-          name: config-map
-      initContainers:
-      - name: init-myservice
-        image: busybox
-        command: ['sh', '-c', 'echo Init Container']
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: disktype
-                operator: In
-                values:
-                - ssd
-      nodeSelector:
-        disktype: ssd
-      serviceAccountName: my-service-account
-      tolerations:
-      - key: "key1"
-        operator: "Equal"
-        value: "value1"
-        effect: "NoSchedule"
-      dnsPolicy: Default
-      securityContext:
-        runAsUser: 1000
-      hostAliases:
-      - ip: "127.0.0.1"
-        hostnames:
-        - "myapp.local"
-      imagePullSecrets:
-      - name: myregistrykey
-      restartPolicy: Always
 
