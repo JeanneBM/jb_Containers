@@ -1,3 +1,62 @@
+Deployment
+
+spec:containers level
+============================
+volumes: Definiowanie woluminów używanych przez kontenery.
+
+initContainers: Definiowanie kontenerów inicjujących, które są uruchamiane przed głównymi kontenerami.
+
+affinity: Konfiguracja reguł preferencji dla przypisania poda do węzłów.
+
+nodeSelector: Określanie węzłów, na których pody mogą być uruchomione.
+
+serviceAccountName: Określanie konta serwisowego dla poda.
+
+tolerations: Konfiguracja tolerancji na reguły taint w węzłach.
+
+dnsPolicy: Ustawianie polityki DNS dla poda.
+
+securityContext: Konfiguracja kontekstu bezpieczeństwa na poziomie poda.
+
+hostAliases: Definiowanie aliasów hosta w pliku /etc/hosts w kontenerach.
+
+imagePullSecrets: Określanie sekretów używanych do pobierania obrazów kontenerów.
+
+restartPolicy: Ustalanie polityki restartu poda (np. Always, OnFailure, Never).
+
+
+spec:containwers:name level
+============================
+image: Definiuje obraz kontenera.
+
+ports: Definiuje porty, które kontener otwiera.
+
+env: Lista zmiennych środowiskowych dla kontenera.
+
+volumeMounts: Definiuje woluminy montowane w kontenerze.
+
+resources: Definiuje limity i żądania zasobów dla kontenera.
+
+livenessProbe: Definiuje sondę liveness.
+
+readinessProbe: Definiuje sondę readiness.
+
+startupProbe: Definiuje sondę startup.
+
+command: Definiuje polecenia uruchamiane w kontenerze.
+
+args: Argumenty przekazywane do poleceń uruchamianych w kontenerze.
+
+workingDir: Definiuje katalog roboczy dla polecenia kontenera.
+
+lifecycle: Definiuje cykl życia haka dla kontenera.
+
+securityContext: Definiuje kontekst bezpieczeństwa dla kontenera.
+
+imagePullPolicy: Polityka pobierania obrazu (np. Always, IfNotPresent, Never).
+
+======================================================================================================================================
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
