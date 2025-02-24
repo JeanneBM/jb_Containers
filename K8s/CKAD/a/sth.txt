@@ -1,0 +1,203 @@
+tylko volumes sa na
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project-earthflower
+  namespace: earth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: project-earthflower
+  template:
+    metadata:
+      labels:
+        app: project-earthflower
+    spec:
+      containers:
+      - name: httpd
+        image: httpd:2.4.41-alpine
+
+-------------------------------------------------------------------------
+        volumeMounts:
+        - mountPath: /tmp/project-data
+          name: project-data
+      volumes:
+      - name: project-data
+        persistentVolumeClaim:
+          claimName: earth-project-earthflower-pvc
+-------------------------------------------------------------------------
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: przykladowa-aplikacja
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: przykladowa-aplikacja
+  template:
+    metadata:
+      labels:
+        app: przykladowa-aplikacja
+    spec:
+      containers:
+      - name: aplikacja
+        image: przykladowa-aplikacja:1.0
+        ports:
+        - containerPort: 8080
+        
+-------------------------------------------------------------------------
+
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 1
+          failureThreshold: 3
+          successThreshold: 1
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 1
+          failureThreshold: 3
+          successThreshold: 1
+        startupProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 1
+          failureThreshold: 30
+          successThreshold: 1
+-------------------------------------------------------------------------
+
+       securityContext:
+          runAsUser: 1000
+          runAsGroup: 3000
+          fsGroup: 2000
+          capabilities:
+            add: ["NET_ADMIN", "SYS_TIME"]
+          readOnlyRootFilesystem: true
+-------------------------------------------------------------------------
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: przykladowa-aplikacja
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: przykladowa-aplikacja
+  template:
+    metadata:
+      labels:
+        app: przykladowa-aplikacja
+    spec:
+      containers:
+      - name: aplikacja
+        image: przykladowa-aplikacja:1.0
+        ports:
+        - containerPort: 8080
+      volumes:
+      - name: config-volume
+        configMap:
+          name: config-map
+      initContainers:
+      - name: init-myservice
+        image: busybox
+        command: ['sh', '-c', 'echo Init Container']
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: disktype
+                operator: In
+                values:
+                - ssd
+      nodeSelector:
+        disktype: ssd
+      serviceAccountName: my-service-account
+      tolerations:
+      - key: "key1"
+        operator: "Equal"
+        value: "value1"
+        effect: "NoSchedule"
+      dnsPolicy: Default
+      securityContext:
+        runAsUser: 1000
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        - "myapp.local"
+      imagePullSecrets:
+      - name: myregistrykey
+      restartPolicy: Always
+
+Deployment
+
+spec:containers level
+============================
+volumes: Definiowanie woluminów używanych przez kontenery.
+
+initContainers: Definiowanie kontenerów inicjujących, które są uruchamiane przed głównymi kontenerami.
+
+affinity: Konfiguracja reguł preferencji dla przypisania poda do węzłów.
+
+nodeSelector: Określanie węzłów, na których pody mogą być uruchomione.
+
+serviceAccountName: Określanie konta serwisowego dla poda.
+
+tolerations: Konfiguracja tolerancji na reguły taint w węzłach.
+
+dnsPolicy: Ustawianie polityki DNS dla poda.
+
+securityContext: Konfiguracja kontekstu bezpieczeństwa na poziomie poda.
+
+hostAliases: Definiowanie aliasów hosta w pliku /etc/hosts w kontenerach.
+
+imagePullSecrets: Określanie sekretów używanych do pobierania obrazów kontenerów.
+
+restartPolicy: Ustalanie polityki restartu poda (np. Always, OnFailure, Never).
+
+
+spec:containwers:name level
+============================
+image: Definiuje obraz kontenera.
+
+ports: Definiuje porty, które kontener otwiera.
+
+env: Lista zmiennych środowiskowych dla kontenera.
+
+volumeMounts: Definiuje woluminy montowane w kontenerze.
+
+resources: Definiuje limity i żądania zasobów dla kontenera.
+
+livenessProbe: Definiuje sondę liveness.
+
+readinessProbe: Definiuje sondę readiness.
+
+startupProbe: Definiuje sondę startup.
+
+command: Definiuje polecenia uruchamiane w kontenerze.
+
+args: Argumenty przekazywane do poleceń uruchamianych w kontenerze.
+
+workingDir: Definiuje katalog roboczy dla polecenia kontenera.
+
+lifecycle: Definiuje cykl życia haka dla kontenera.
+
+securityContext: Definiuje kontekst bezpieczeństwa dla kontenera.
+
+imagePullPolicy: Polityka pobierania obrazu (np. Always, IfNotPresent, Never).
