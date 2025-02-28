@@ -44,3 +44,101 @@ spec:
       - backend:
           serviceName: your-api-canary
           servicePort: http
+=================================================================================================================================================================
+Create a Blue/Green Setup for an Existing Deployment
+Make a copy of the existing Deployment manifest:
+cp bluegreen/web-frontend.yml bluegreen/web-frontend-green.yml
+Edit the new manifest to configure the green Deployment:
+Note: When copying and pasting code into Vim from the lab guide, first enter :set paste (and then i to enter insert mode) to avoid adding unnecessary spaces and hashes. To save and quit the file, press Escape followed by :wq. To exit the file without saving, press Escape followed by :q!.
+vi bluegreen/web-frontend-green.yml
+Change the Deployment name from web-frontend to web-frontend-green:
+metadata:
+  name: web-frontend-green
+Change both of the env labels from main to green in the selector and the Pod template sections:
+  selector:
+    matchLabels:
+      app: web-frontend
+      env: green
+  template:
+    metadata:
+      labels:
+        app: web-frontend
+        env: green
+Type ESC followed by :wq to save your changes.
+Create the green Deployment with kubectl apply:
+kubectl apply -f bluegreen/web-frontend-green.yml
+Check the Pods' status:
+kubectl get pods -n bluegreen -o wide
+Copy the IP address of one of the green Pods to use in one of the next steps.
+Log in to the control plane node:
+ssh k8s-control
+Test the green Pod using the IP address you copied before:
+curl <green_Pod_IP_address>
+You should receive a response listing the Pod's labels.
+Return to the CLI server:
+exit
+Edit the Service to point it to the new green Deployment's Pods:
+kubectl edit svc web-frontend-svc -n bluegreen
+Scroll down, and change the value of the env label in the selector from main to green:
+  selector:
+    app: web-frontend
+    env: green
+Type ESC followed by :wq to save your changes.
+Test the Service a few times:
+curl k8s-control:30081
+You should get responses only from the green Pod(s). This shows that the Service is pointing only to the green Deployment.
+Run the verification script to ensure you completed the objective:
+~/verify.sh
+
+=================================================================================================================================================================
+
+Create a Canary Setup for an Existing Deployment
+
+Make a copy of the existing Deployment manifest:
+cp canary/auth.yml canary/auth-canary.yml
+Edit the new manifest to configure the canary Deployment:
+vi canary/auth-canary.yml
+Change the Deployment name from auth to auth-canary:
+metadata:
+  name: auth-canary
+Change the number of replicas from 2 to 1:
+spec:
+  replicas: 1
+Change the env label from main to canary in both the selector and the Pod template:
+  selector:
+    matchLabels:
+      app: auth
+      env: canary
+  template:
+    metadata:
+      labels:
+        app: auth
+        env: canary
+Type ESC followed by :wq to save your changes.
+Create the canary Deployment with kubectl apply:
+kubectl apply -f canary/auth-canary.yml
+Check the Pods' status:
+kubectl get pods -n canary
+You should see the 2 main Pods and the 1 replica from the canary Deployment.
+Edit the Service to point it to the Pods from both Deployments:
+kubectl edit svc auth-svc -n canary
+Scroll down to the selector. Remove the env label line from the selector, leaving only the app label:
+  selector:
+    app: auth
+Type ESC followed by :wq to save your changes.
+Edit the main Deployment to set its replica count appropriately:
+vi canary/auth.yml
+Change the replica count from 2 to 3:
+spec:
+  replicas: 3
+Type ESC followed by :wq to save your changes.
+Apply the changes with kubectl apply:
+kubectl apply -f canary/auth.yml
+Check the Pods in the canary Namespace:
+kubectl get pods -n canary
+You should see 3 replicas in the main Deployment and 1 replica in the canary Deployment.
+Test the Service a few times:
+curl k8s-control:30082
+You should get responses from both the main and canary Pods.
+Run the verification script to ensure you completed the objective:
+~/verify.sh
