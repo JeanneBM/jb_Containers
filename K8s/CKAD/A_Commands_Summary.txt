@@ -32,6 +32,7 @@ flagi, które wyszły z użycia - Pod:
 --limits="cpu=500m,memory=1Gi"
 --requests="cpu=250m,memory=512Mi"
 * kubectl set resources pod nginx --limits=cpu=500m,memory=1Gi --requests=cpu=250m,memory=512Mi
+* kubectl set image deployment/webapp webapp-container=kodekloud/webapp-color
 
 * kubectl create deployment webapp --namespace=dev-ns --image=kodekloud/webapp-color --replicas=5 --port=8080 
 --namespace=dev-ns
