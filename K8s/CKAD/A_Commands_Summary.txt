@@ -32,8 +32,6 @@ flagi, które wyszły z użycia - Pod:
 --limits="cpu=500m,memory=1Gi"
 --requests="cpu=250m,memory=512Mi"
 * kubectl set resources pod nginx --limits=cpu=500m,memory=1Gi --requests=cpu=250m,memory=512Mi
-* kubectl set image deployment/webapp webapp-container=kodekloud/webapp-color
-
 * kubectl create deployment webapp --namespace=dev-ns --image=kodekloud/webapp-color --replicas=5 --port=8080 
 --namespace=dev-ns
 --image=kodekloud/webapp-color
@@ -61,7 +59,10 @@ zamiast flag:
 * kubectl create secret generic my-secret --from-file=./my-file.txt
 
 * kubectl create cronjob complex-cronjob --image=busybox --schedule="*/5 * * * *"  
-* kubectl set env --local -f - --keys=key1,key2  | 
+
+* kubectl set env --local -f - --keys=key1,key2  
+* kubectl set image deployment/webapp webapp-container=kodekloud/webapp-color
+
 * kubectl label --local -f - 'environment=prod'
 
 --schedule="*/5 * * * *"  //every 5 min
@@ -91,6 +92,27 @@ zamiast flag:
 * kubectl taint nodes node01 spray=mortein:NoSchedule
 * kubectl proxy 8001& //uruchamia serwer proxy Kubernetes na porcie 8001 w &tle
 * kubectl explain replicaset
+
+* kubectl set
+kubectl set image deployment/my-app my-container=nginx:1.19
+kubectl set resources pod/my-pod --limits=cpu=500m,memory=512Mi --requests=cpu=200m,memory=256Mi
+kubectl set env deployment/my-app ENV=production LOG_LEVEL=debug
+kubectl set serviceaccount deployment/my-app my-service-account
+kubectl set subject clusterrolebinding/my-clusterrolebinding --serviceaccount=default:my-service-account
+kubectl set selector service/my-service app=my-app
+kubectl set probe deployment/my-app --liveness --get-url=http://:8080/healthz
+kubectl set command deployment/my-app -- /bin/sh -c "echo Hello, World!"
+kubectl set volume deployment/my-app --add --name=my-volume --mount-path=/data --type=emptyDir
+kubectl set role rolebinding/my-rolebinding --role=admin
+kubectl set clusterrole clusterrolebinding/my-clusterrolebinding --clusterrole=cluster-admin
+
+
+treated as set:
+kubectl scale deployment/my-app --replicas=3 
+kubectl annotate deployment/my-app description="My application" 
+kubectl label pod/my-pod env=production
+kubectl config set-cluster my-cluster --server=https://my-cluster.example.com --certificate-authority=/path/to/ca.crt
+kubectl config set-credentials my-user --client-certificate=/path/to/cert.crt --client-key=/path/to/key.key
 
 
 Helm 
