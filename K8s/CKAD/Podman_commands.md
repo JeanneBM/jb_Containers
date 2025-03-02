@@ -36,3 +36,47 @@ Podman obsługuje tworzenie jednostek systemd do automatycznego uruchamiania kon
 
 * podman generate systemd --name mycontainer --new – Generuje jednostkę systemd dla kontenera
 
+----------------------------------
+
+Podstawowe zarządzanie kontenerami
+* podman ps – Wyświetl uruchomione kontenery
+* podman ps -a – Wyświetl wszystkie kontenery (w tym zatrzymane)
+* podman run -it --rm alpine sh – Uruchom kontener interaktywnie i usuń go po zakończeniu
+* podman start <container> – Uruchom zatrzymany kontener
+* podman stop <container> – Zatrzymaj działający kontener
+* podman rm <container> – Usuń kontener
+* podman kill <container> – Wymuś zatrzymanie kontenera
+* podman logs <container> – Wyświetl logi kontenera
+
+Zarządzanie obrazami
+* podman pull <image> – Pobierz obraz
+* podman images – Wyświetl pobrane obrazy
+* podman rmi <image> – Usuń obraz
+* podman tag <image> <new-name> – Oznacz (przemianuj) obraz
+* podman inspect <image/container> – Pobierz szczegółowe informacje
+
+Tworzenie i uruchamianie kontenerów
+* podman build -t myimage . – Zbuduj obraz z Dockerfile
+* podman run -d --name mycontainer myimage – Uruchom kontener w trybie odłączonym (w tle)
+* podman exec -it <container> bash – Wykonaj polecenie wewnątrz działającego kontenera
+
+Woluminy i przechowywanie danych
+* podman volume create myvol – Utwórz nazwany wolumin
+* podman volume ls – Wyświetl listę woluminów
+* podman volume rm myvol – Usuń wolumin
+* podman run -v myvol:/data alpine ls /data – Zamontuj wolumin w kontenerze
+
+Sieci
+* podman network ls – Wyświetl listę sieci
+* podman network create mynet – Utwórz nową sieć
+* podman run --network mynet mycontainer – Podłącz kontener do sieci
+
+Zarządzanie podami (styl Kubernetes)
+* podman pod create --name mypod – Utwórz pod
+* podman pod ps – Wyświetl listę podów
+* podman pod stop mypod – Zatrzymaj pod
+* podman pod rm mypod – Usuń pod
+
+Integracja z Kubernetes
+* podman generate kube <container> – Wygeneruj plik YAML Kubernetes z kontenera
+* podman play kube mypod.yaml – Uruchom pod na podstawie pliku YAML Kubernetes
