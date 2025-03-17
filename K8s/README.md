@@ -1,5 +1,7 @@
 [![Python 3.8](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-360/)
 
+https://kubernetes.io/docs/reference/kubectl/quick-reference/
+
 ```
 trivy k8s --report summary cluster
 trivy image bitnami/nginx | grep -i critical
