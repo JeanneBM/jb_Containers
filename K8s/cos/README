@@ -73,7 +73,7 @@ backoffLimit
 
 12.
 - kubectl create deploy web --image=nginx
-- kubectl expose deploy web --port=80 --target-port=80 --type=NodePort
+- kubectl expose deploy web --port=80 --target-port=80 --type=NodePort --name=rover
 
 13. Canary
 k edit deploy
