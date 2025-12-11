@@ -28,7 +28,7 @@ spec -> containers ->
 - kubectl create cronjob grep-cron --image=busybox --schedule="*/2 * * * *" -- /bin/sh -c 'grep -i pattern /etc/plik.conf'
 + successfulJobsHistoryLimit
 failedJobsHistoryLimit
-activeDeadlineSeconds
+activeDeadlineSeconds: 6   # ubij po 6 sekundach
 restartPolicy (dla template podów)
 backoffLimit
 
