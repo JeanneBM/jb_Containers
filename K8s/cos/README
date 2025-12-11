@@ -2,6 +2,27 @@
 - kubectl set resources deploy frontend-deployment --requests=memory=128Mi
 - kubectl set resources deploy frontend-deployment --limits=memory=256Mi
 
+2.
+w podach ->
+metadata:
+  labels:
+    role: allowed
+w np ->
+spec:
+  podSelector:
+    matchLabels:
+      #app: my-app   # pody, które chcemy chronić
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          role: allowed
+    - podSelector:
+        matchLabels:
+          role: allowed
+
 3. 
 - kubectl create sa my-sa
 - kubectl set sa deploy/frontend-deployment my-sa
