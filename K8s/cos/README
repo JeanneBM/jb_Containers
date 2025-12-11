@@ -8,8 +8,8 @@
 
 4.
 - K8s Doc wyszukiwarka: "--verb=get role"
-#kubectl create role pod-reader --verb=get --verb=list --verb=watch --resource=pods -n <namespace>
-- kubectl create rolebinding pod-reader --role=pod-reader --serviceaccount=default:default -n default,
+#kubectl create role pod-reader --verb=get --verb=list --verb=watch --resource=pods
+- kubectl create rolebinding pod-reader --role=pod-reader --serviceaccount=default:default
 
 5.
 - kubectl create secret generic my-secret --from-literal=key1=value1
