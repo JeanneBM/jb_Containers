@@ -1,0 +1,348 @@
+# 1. Deployment: request 128Mi, limit 256Mi
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: t1-deploy
+spec:
+  selector:
+    matchLabels:
+      app: t1
+  template:
+    metadata:
+      labels:
+        app: t1
+    spec:
+      containers:
+        - name: app
+          image: nginx
+          resources:
+            requests:
+              memory: "128Mi"
+            limits:
+              memory: "256Mi"
+---
+# 2. NetworkPolicy – tylko z dwóch podów (z label access=allowed)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: t2-np
+spec:
+  podSelector:
+    matchLabels:
+      app: myapp
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              access: allowed
+---
+# 3–4. SA + Role + RoleBinding + Deployment z SA
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: my-sa
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-reader
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pod-reader-binding
+subjects:
+  - kind: ServiceAccount
+    name: my-sa
+roleRef:
+  kind: Role
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: t3-deploy
+spec:
+  selector:
+    matchLabels:
+      app: t3
+  template:
+    metadata:
+      labels:
+        app: t3
+    spec:
+      serviceAccountName: my-sa
+      containers:
+        - name: app
+          image: nginx
+---
+# 5. Secret key1:value1 + env z secreta
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-secret
+type: Opaque
+stringData:
+  key1: value1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: t5-deploy
+spec:
+  selector:
+    matchLabels:
+      app: t5
+  template:
+    metadata:
+      labels:
+        app: t5
+    spec:
+      containers:
+        - name: app
+          image: nginx
+          env:
+            - name: MY_VAR
+              valueFrom:
+                secretKeyRef:
+                  name: my-secret
+                  key: key1
+---
+# 6. NetworkPolicy – Egress tylko HTTPS (443) na IP
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: https-egress
+spec:
+  podSelector:
+    matchLabels:
+      app: myapp
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 1.2.3.4/32
+      ports:
+        - protocol: TCP
+          port: 443
+---
+# 8. CronJob – busybox, grep, co 2 min, 2 sukcesy, 3 faile, kill po 6s
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: grep-cron
+spec:
+  schedule: "*/2 * * * *"
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 6
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: busy
+              image: busybox
+              command: ["sh", "-c", "grep -i pattern /etc/plik.conf"]
+---
+# 9. Deployment – wersja obrazu dopasowana do wersji klastra
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: version-match
+spec:
+  selector:
+    matchLabels:
+      app: vapp
+  template:
+    metadata:
+      labels:
+        app: vapp
+    spec:
+      containers:
+        - name: app
+          image: myimage:v1.29.0
+---
+# 10. Deployment z label + obraz do rollbacku
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rollback-demo
+  labels:
+    existing: label
+spec:
+  selector:
+    matchLabels:
+      app: rollback-demo
+  template:
+    metadata:
+      labels:
+        app: rollback-demo
+        env: prod
+    spec:
+      containers:
+        - name: app
+          image: nginx:1.25
+---
+# 11. Deployment z requests/limits CPU + RAM
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: t11-deploy
+spec:
+  selector:
+    matchLabels:
+      app: t11
+  template:
+    metadata:
+      labels:
+        app: t11
+    spec:
+      containers:
+        - name: app
+          image: nginx
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+---
+# 12. Deployment + NodePort
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodeport-demo
+spec:
+  selector:
+    matchLabels:
+      app: nodeport
+  template:
+    metadata:
+      labels:
+        app: nodeport
+    spec:
+      containers:
+        - name: app
+          image: nginx
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodeport-svc
+spec:
+  type: NodePort
+  selector:
+    app: nodeport
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30080
+---
+# 13. Canary – stable + canary + Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-stable
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: myapp
+      track: stable
+  template:
+    metadata:
+      labels:
+        app: myapp
+        track: stable
+    spec:
+      containers:
+        - name: app
+          image: myimage:v1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-canary
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp
+      track: canary
+  template:
+    metadata:
+      labels:
+        app: myapp
+        track: canary
+    spec:
+      containers:
+        - name: app
+          image: myimage:v2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp-svc
+spec:
+  selector:
+    app: myapp
+  ports:
+    - port: 80
+      targetPort: 80
+---
+# 14. ReadinessProbe /healthz na 8081
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: readiness-demo
+spec:
+  selector:
+    matchLabels:
+      app: rd
+  template:
+    metadata:
+      labels:
+        app: rd
+    spec:
+      containers:
+        - name: app
+          image: nginx
+          ports:
+            - containerPort: 8081
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+---
+# 15. Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: basic-ingress
+spec:
+  rules:
+    - host: myapp.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: myapp-svc
+                port:
+                  number: 80
