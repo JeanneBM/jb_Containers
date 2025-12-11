@@ -144,10 +144,7 @@ egress:
 Błąd docker buildx bez argumentu → trzeba użyć build.
 Przykładowe polecenie:
 
-docker buildx build \
-  --tag myapp:1.2 \
-  --output type=oci,dest=myapp-1.2.tar \
-  .
+docker buildx build --tag myapp:1.2 --output type=oci,dest=myapp-1.2.tar .
 
 
 To zrobi obraz myapp:1.2 w formacie OCI i zapisze jako myapp-1.2.tar.
