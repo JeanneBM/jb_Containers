@@ -1,0 +1,349 @@
+1. Dodać do Deploymentu request 128Mi i limit na ½ zasobów namespace
+
+Typowo w zadaniach chodzi po prostu o request 128Mi i jakiś limit (np. 256Mi).
+Przykład w spec.template.spec.containers[]:
+
+resources:
+  requests:
+    memory: "128Mi"
+  limits:
+    memory: "256Mi"
+
+
+Jeśli musisz użyć też CPU:
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "200m"
+    memory: "256Mi"
+
+2. NetworkPolicy: tylko traffic z dwóch podów
+
+Najprościej: oznaczasz te dwa pody (lub ich deploymenty) labelką, np. access=allowed, a potem w NP wpuszczasz tylko z tych labeli.
+
+NP dla aplikacji z labelką app=myapp:
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: myapp-allow-two-pods
+  namespace: your-namespace
+spec:
+  podSelector:
+    matchLabels:
+      app: myapp
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              access: allowed
+
+
+A na dwóch podach / Deploymentach:
+
+kubectl label pod POD1 access=allowed
+kubectl label pod POD2 access=allowed
+
+3–4. serviceAccountName + błąd “cannot list pods”
+
+W Deployment:
+
+spec:
+  template:
+    spec:
+      serviceAccountName: my-sa
+      containers:
+        - name: app
+          image: ...
+
+
+ServiceAccount:
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: my-sa
+  namespace: your-namespace
+
+
+Błąd User "system:serviceaccount:namespace:default" cannot list resource "pods" → brakuje RBAC:
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-reader
+  namespace: your-namespace
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pod-reader-binding
+  namespace: your-namespace
+subjects:
+  - kind: ServiceAccount
+    name: my-sa
+    namespace: your-namespace
+roleRef:
+  kind: Role
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io
+
+5. Secret key1:value1 jako env w Deployment
+
+Secret:
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-secret
+type: Opaque
+stringData:
+  key1: value1
+
+
+W Deployment:
+
+env:
+  - name: MY_VAR
+    valueFrom:
+      secretKeyRef:
+        name: my-secret
+        key: key1
+
+
+MY_VAR w kontenerze będzie miało wartość value1.
+
+6. Egress tam, gdzie jest adres https
+
+W NetworkPolicy egress definiuje ruch wychodzący, np. tylko HTTPS (443).
+Pamiętaj: NetworkPolicy obsługuje IP / CIDR, nie FQDN.
+
+Przykład:
+
+policyTypes:
+  - Egress
+egress:
+  - to:
+      - ipBlock:
+          cidr: 1.2.3.4/32
+    ports:
+      - protocol: TCP
+        port: 443
+
+7. Dockerfile, podman, docker buildx, obraz OCI w .tar z tagiem 1.2
+
+Błąd docker buildx bez argumentu → trzeba użyć build.
+Przykładowe polecenie:
+
+docker buildx build \
+  --tag myapp:1.2 \
+  --output type=oci,dest=myapp-1.2.tar \
+  .
+
+
+To zrobi obraz myapp:1.2 w formacie OCI i zapisze jako myapp-1.2.tar.
+
+8. CronJob (busybox, grep, co 2 min, 2 sukcesy, 3 faile, kill po 6s, restartPolicy Never)
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: grep-cron
+spec:
+  schedule: "*/2 * * * *"        # co 2 min
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 6   # ubij po 6 sekundach
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: busybox
+              image: busybox
+              command: ["sh", "-c", "grep -i pattern /etc/plik.conf"]
+
+9. Aplikacja w innej wersji K8s niż cluster – wyrównać wersje
+
+Najczęściej chodzi o tag obrazu dopasowany do wersji klastra, np. klaster v1.29.0 → obraz myapp:v1.29.0.
+
+Komenda:
+
+kubectl set image deployment my-deploy my-container=myimage:v1.29.0
+
+
+Albo edytujesz YAML:
+
+containers:
+  - name: my-container
+    image: myimage:v1.29.0
+
+
+Brak rollout history jest normalny, jeśli dopiero zaczynasz / nie było zmian.
+
+10. Deployment: dodać label + zmienić image, potem rollout undo bez cofania labelki
+
+Kolejność:
+
+Najpierw label (osobna operacja):
+
+kubectl label deployment my-deploy env=prod
+
+
+Potem zmiana obrazu:
+
+kubectl set image deployment my-deploy my-container=myimage:v2
+
+
+kubectl rollout undo deployment my-deploy
+Cofnie image do poprzedniego, ale label env=prod zostanie, bo label była w innej rewizji/operacji.
+
+11. Podobne jak 1, ale z CPU i memory (requests + limits)
+
+Przykład:
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "256Mi"
+
+
+Jeśli jest wymóg “połowa zasobów namespace”, to zwykle w praktyce to abstrakcja – w zadaniach testowych zazwyczaj po prostu chcą sensowne wartości jak powyżej.
+
+12. Deployment + NodePort
+
+Opcja 1: kubectl:
+
+kubectl create deployment my-deploy --image=nginx
+kubectl expose deployment my-deploy --port=80 --type=NodePort
+
+
+Opcja 2: YAML Service:
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-deploy-nodeport
+spec:
+  type: NodePort
+  selector:
+    app: my-deploy
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30080  # jeśli trzeba konkretny
+
+13. Canary deployment
+
+Prosty wariant: dwa Deploymenty z tym samym selektorem app=myapp, różne obrazy i liczby replik.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-stable
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: myapp
+      version: stable
+  template:
+    metadata:
+      labels:
+        app: myapp
+        version: stable
+    spec:
+      containers:
+        - name: app
+          image: myapp:v1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-canary
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp
+      version: canary
+  template:
+    metadata:
+      labels:
+        app: myapp
+        version: canary
+    spec:
+      containers:
+        - name: app
+          image: myapp:v2
+
+
+Service wskazuje na oba:
+
+spec:
+  selector:
+    app: myapp
+
+
+(jeśli chcesz stricte 80/20 itd., użyj odpowiednio replik).
+
+14. Readiness probe z /healthz, port 8081
+
+W kontenerze:
+
+readinessProbe:
+  httpGet:
+    path: /healthz
+    port: 8081
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 2
+  failureThreshold: 3
+  successThreshold: 1
+
+
+I sam kontener np.:
+
+containers:
+  - name: app
+    image: myapp:latest
+    ports:
+      - containerPort: 8081
+
+
+Port jest wymagany w httpGet, bez niego kubelet nie będzie wiedział gdzie pykać.
+
+15. Ingress
+
+Prosty Ingress do Service my-deploy-nodeport (albo ClusterIP – Ingress nie musi być NodePort):
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: myapp-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: myapp.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: my-deploy-nodeport
+                port:
+                  number: 80
