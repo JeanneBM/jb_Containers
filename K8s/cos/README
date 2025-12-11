@@ -49,6 +49,7 @@ engress
 
 7. 
 - docker buildx build --tag myapp:1.2 --output type=oci,dest=myapp-1.2.tar . -> "musi miec przynajmniej 1 agrument"
+docker buildx build --tag myapp:1.2 -o type=oci,dest=/tmp/myapp-1.2.tar -f .buildkite/scripts/Dockerfile-amd64 . (?)
 
 8.
 - kubectl create cronjob grep-cron --image=busybox -- /bin/sh -c 'grep -i pattern /etc/plik.conf'
