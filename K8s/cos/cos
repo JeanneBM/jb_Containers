@@ -347,3 +347,73 @@ spec:
                 name: my-deploy-nodeport
                 port:
                   number: 80
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+## 1. Deployment – zasoby
+- Dodać `resources.requests.memory: 128Mi`
+- Dodać `resources.limits` na połowę zasobów z namespace
+
+## 2. NetworkPolicy
+- Już istnieje (?)
+- Przepuszczać tylko ruch z dwóch podów
+
+## 3. Deployment – ServiceAccount
+- Dodać `serviceAccountName`
+
+## 4. ServiceAccount error
+- Komunikat:  
+  `user:serviceaccount:namespace:default cannot find resources "pods"`
+
+## 5. Secrets
+- Stworzyć `key1: value1`
+- Dodać do Deploymentu jako zmienną środowiskową (`env`)
+- Nazwa zmiennej = wartość `key1`
+
+## 6. Egress
+- Tam, gdzie pojawia się adres HTTPS
+
+## 7. Dockerfile
+- Może być z Podmanem lub Dockerem
+- Po `docker build .` pojawia się informacja, że `docker buildx` wymaga argumentu
+- Ma powstać obraz z Dockerfile:
+  - Otagowany jako `1.2`
+  - W formacie OCI
+  - Zapisany do pliku `.tar`
+
+## 8. CronJob (testowanie)
+- Kontener z obrazem `busybox`, komenda: `grep -i /etc/plik.conf`
+- Restart policy: `Never`
+- W historii zostawić 2 sukcesy i 3 porażki
+- Ubijać poda (terminate) po 6 sekundach
+- Uruchamiać co drugą minutę
+
+## 9. Aplikacja – wersja
+- Działa na innej wersji K8s niż klaster
+- Brak rollout history, wszystko działa
+- Dopasować wersję aplikacji do wersji klastra
+
+## 10. Deployment – rollout undo
+- Dodać label i zmienić wersję obrazu (jedno label już jest)
+- Następnie zrobić `rollout undo`
+- Zapisywać zmiany stopniowo, aby `undo` nie cofnęło labelki
+
+## 11. Limity CPU i pamięci
+- Podobnie jak w pkt 1, ale z limitem CPU i pamięci
+
+## 12. NodePort
+- Stworzyć Deployment i Service
+- Następnie zrobić expose na NodePort  
+  (można: deploy + service → expose, albo deploy → expose)
+
+## 13. Canary deployment
+- Wdrożenie w trybie canary
+
+## 14. Readiness probe
+- Dodać do Deploymentu typowe opcje (sekundy w sekcji)
+- Ścieżka `/healthz`
+- Uwaga: bez portu nie zadziała
+- W zadaniu podany port `8081` → `containerPort: 8081`
+- W dokumentacji nie ma `/health`, tylko inne przykłady
+
+## 15. Ingress
+- Skonfigurować Ingress
