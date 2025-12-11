@@ -48,7 +48,7 @@ engress
 - K8s Doc wyszukiwarka: "ipBlock:"
 
 7. 
-- docker buildx build --tag myapp:1.2 --output type=oci,dest=myapp-1.2.tar .
+- docker buildx build --tag myapp:1.2 --output type=oci,dest=myapp-1.2.tar . -> "musi miec przynajmniej 1 agrument"
 
 8.
 - kubectl create cronjob grep-cron --image=busybox -- /bin/sh -c 'grep -i pattern /etc/plik.conf'
@@ -73,19 +73,14 @@ backoffLimit
 
 12.
 - kubectl create deploy web --image=nginx
-- kubectl expose deploy web --port=80 --target-port=80 --type=NodePort --name=rover
+- kubectl expose deploy web --port=80 --target-port=80 --type=NodePort --name=rover(nazwa svc)
 
 13. Canary
-k edit deploy
-+ K8s Doc wyszukiwarka: "rollingupdate"
-spec:
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
-
-k set image deployment/deploy image=image:2.0 --record
+1.
+- kopia yaml -> deploy drugiego identycznego tylko z current na canary i apply
+2.
+- w namespace ma byc max 10 podow - na dwa lustrzane deploymenty
+- i na canary ma byc skierowane 25% trafficu
 
 14.
 - https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/ "path: /healthz"
