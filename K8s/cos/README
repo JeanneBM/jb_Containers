@@ -48,7 +48,7 @@ engress
 - K8s Doc wyszukiwarka: "ipBlock:"
 
 7. 
-- docker buildx build --tag myapp:1.2 --output type=oci,dest=myapp-1.2.tar . -> "musi miec przynajmniej 1 agrument"
+- docker buildx build --tag myapp:1.2 --output type=oci,dest=myapp-1.2.tar . -> "musi miec przynajmniej 1 agrument" // kropka (.) musi być zaraz po build, a nie na końcu po opcjach (?)
 docker buildx build --tag myapp:1.2 -o type=oci,dest=/tmp/myapp-1.2.tar -f .buildkite/scripts/Dockerfile-amd64 . (?)
 
 8.
