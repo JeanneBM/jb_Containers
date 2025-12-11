@@ -26,8 +26,11 @@ spec -> containers ->
 - docker buildx build --tag myapp:1.2 --output type=oci,dest=myapp-1.2.tar .
 
 8.
-- kubectl create cronjob grep-cron --image=busybox --schedule="*/2 * * * *" -- /bin/sh -c 'grep -i pattern /etc/plik.conf'
-+ successfulJobsHistoryLimit
+- kubectl create cronjob grep-cron --image=busybox -- /bin/sh -c 'grep -i pattern /etc/plik.conf'
++ 
+spec:
+  schedule="*/2 * * * *"
+successfulJobsHistoryLimit
 failedJobsHistoryLimit
 activeDeadlineSeconds: 6   # ubij po 6 sekundach
 restartPolicy (dla template podów)
