@@ -8,7 +8,7 @@
 
 4.
 - kubectl create role pod-reader --verb=get --verb=list --verb=watch --resource=pods -n <namespace>
-- kubectl create rolebinding default-pod-reader --role=pod-reader --serviceaccount=default:default -n default,
+- kubectl create rolebinding pod-reader --role=pod-reader --serviceaccount=default:default -n default,
 
 5.
 - kubectl create secret generic my-secret --from-literal=key1=value1
