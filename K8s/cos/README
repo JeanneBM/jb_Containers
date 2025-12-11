@@ -22,6 +22,10 @@ spec -> containers ->
                         value: "key1"
 #kubectl set env deploy/frontend-deployment KEY1=$(kubectl get secret my-secret -o jsonpath='{.data.key1}' | base64 -d)
 
+6.
+engress
+- K8s Doc wyszukiwarka: "ipBlock:"
+
 7. 
 - docker buildx build --tag myapp:1.2 --output type=oci,dest=myapp-1.2.tar .
 
@@ -40,12 +44,27 @@ backoffLimit
 - kubectl version [*server]
 - kubectl edit deployment frontend-deployment
 
+10.
+- k edit deploy - dodac kolejne label i zmienianie wersji
+
 11.
 - kubectl set resources deploy/frontend-deployment --limits=cpu=500m,memory=512Mi --requests=cpu=200m,memory=128Mi
 
 12.
 - kubectl create deploy web --image=nginx
 - kubectl expose deploy web --port=80 --target-port=80 --type=NodePort
+
+13. Canary
+k edit deploy
++ K8s Doc wyszukiwarka: "rollingupdate"
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+
+k set image deployment/deploy image=image:2.0 --record
 
 14.
 - https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/ "path: /healthz"
