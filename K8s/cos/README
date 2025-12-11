@@ -28,7 +28,7 @@ spec:
 - kubectl set sa deploy/frontend-deployment my-sa
 
 4.
-- K8s Doc wyszukiwarka: "--verb=get role"
+- K8s Doc wyszukiwarka: "--verb"
 #kubectl create role pod-reader --verb=get --verb=list --verb=watch --resource=pods
 - kubectl create rolebinding pod-reader --role=pod-reader --serviceaccount=default:default
 
