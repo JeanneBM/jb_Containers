@@ -1,0 +1,43 @@
+1.
+- kubectl set resources deploy frontend-deployment --requests=memory=128Mi
+- kubectl set resources deploy frontend-deployment --limits=memory=256Mi
+
+3. 
+- kubectl create sa my-sa
+- kubectl set sa deploy/frontend-deployment my-sa
+
+4.
+- kubectl create role pod-reader --verb=get --verb=list --verb=watch --resource=pods -n <namespace>
+- kubectl create rolebinding default-pod-reader --role=pod-reader --serviceaccount=default:default -n default,
+
+5.
+- kubectl create secret generic my-secret --from-literal=key1=value1
+- kubectl set env deploy/frontend-deployment KEY1=$(kubectl get secret my-secret -o jsonpath='{.data.key1}' | base64 -d)
+
+7. 
+- docker buildx build --tag myapp:1.2 --output type=oci,dest=myapp-1.2.tar .
+
+8.
+- kubectl create cronjob grep-cron --image=busybox --schedule="*/2 * * * *" -- /bin/sh -c 'grep -i pattern /etc/plik.conf'
++ successfulJobsHistoryLimit
+failedJobsHistoryLimit
+activeDeadlineSeconds
+restartPolicy (dla template podów)
+backoffLimit
+
+9. 
+- kubectl version [*server]
+- kubectl edit deployment frontend-deployment
+
+11.
+- kubectl set resources deploy/frontend-deployment --limits=cpu=500m,memory=512Mi --requests=cpu=200m,memory=128Mi
+
+12.
+- kubectl create deploy web --image=nginx
+- kubectl expose deploy web --port=80 --target-port=80 --type=NodePort
+
+14.
+- https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/ "path: /healthz"
+
+
+
