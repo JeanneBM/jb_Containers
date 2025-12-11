@@ -88,4 +88,7 @@ backoffLimit
 - https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/ "path: /healthz"
 
 
+- https://www.reddit.com/r/ckad/comments/1otdo99/couple_tips_for_exam_prep_passed_yesterday_091125/
+- https://www.reddit.com/r/ckad/comments/1phwp5g/passed_ckad_scored_95_sharing_my_prep_tips/
+
 
