@@ -12,7 +12,14 @@
 
 5.
 - kubectl create secret generic my-secret --from-literal=key1=value1
-- kubectl set env deploy/frontend-deployment KEY1=$(kubectl get secret my-secret -o jsonpath='{.data.key1}' | base64 -d)
+- k edit deploy frontend-deployment
+spec -> containers -> 
+                      name:
+                      image:
+                      env:
+                      - name: KEY1
+                        value: "key1"
+#kubectl set env deploy/frontend-deployment KEY1=$(kubectl get secret my-secret -o jsonpath='{.data.key1}' | base64 -d)
 
 7. 
 - docker buildx build --tag myapp:1.2 --output type=oci,dest=myapp-1.2.tar .
