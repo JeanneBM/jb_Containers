@@ -414,3 +414,70 @@ spec:
 
 ## 15. Ingress
 - Skonfigurować Ingress
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# 1. Deployment – zasoby
+kubectl set resources deploy <DEPLOY> --requests=memory=128Mi
+kubectl set resources deploy <DEPLOY> --limits=cpu=500m,memory=256Mi
+
+# 2. NetworkPolicy – info i podłączenie podów
+kubectl create ns test-ns
+kubectl get pod -o wide
+
+# 3. Deployment – ServiceAccount
+kubectl create sa my-sa -n <NS>
+kubectl set serviceaccount deploy/<DEPLOY> my-sa -n <NS>
+
+# 4. SA error – nadaj role
+kubectl create role pod-reader --verb=get,list,watch --resource=pods -n <NS>
+kubectl create rolebinding sa-pods --role=pod-reader --serviceaccount=<NS>:my-sa -n <NS>
+
+# 5. Secrets + env
+kubectl create secret generic my-secret --from-literal=key1=value1
+kubectl set env deploy/<DEPLOY> KEY1=$(kubectl get secret my-secret -o jsonpath='{.data.key1}' | base64 -d)
+
+# 6. Egress – port 443
+# (manifest osobno)
+
+# 7. Dockerfile – build OCI tar
+docker build -t myimage:1.2 --output type=oci,dest=image.tar .
+# lub
+podman build -t myimage:1.2 .
+podman save --format oci-archive -o image.tar myimage:1.2
+
+# 8. CronJob – test
+kubectl get cronjob
+kubectl describe cronjob test-cron
+
+# 9. Wersja aplikacji
+kubectl version --short
+kubectl set image deploy/<DEPLOY> app=myimage:<WERSJA_KLASTRA>
+
+# 10. Rollout undo
+kubectl label deploy <DEPLOY> stage=canary
+kubectl set image deploy/<DEPLOY> app=myimage:2.0
+kubectl rollout undo deploy/<DEPLOY>
+kubectl rollout history deploy/<DEPLOY>
+
+# 11. Limity CPU i pamięć
+kubectl set resources deploy/<DEPLOY> --limits=cpu=500m,memory=512Mi --requests=cpu=200m,memory=128Mi
+
+# 12. NodePort
+kubectl create deploy web --image=nginx
+kubectl expose deploy web --port=80 --target-port=80 --type=ClusterIP
+kubectl expose deploy web --type=NodePort --name web-np
+kubectl get svc web-np
+
+# 13. Canary deployment
+kubectl create deploy app-stable --image=myapp:1.0
+kubectl create deploy app-canary --image=myapp:2.0
+kubectl scale deploy app-stable --replicas=8
+kubectl scale deploy app-canary --replicas=2
+
+# 14. Readiness probe
+kubectl set probe deploy/<DEPLOY> --readiness --get-url=http://:8081/healthz --initial-delay-seconds=5 --timeout-seconds=3 --period-seconds=5
+
+# 15. Ingress
+kubectl get ingress
+kubectl describe ingress
